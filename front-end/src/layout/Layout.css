@@ -2,3 +2,64 @@
   background-color: #393a44;
   min-width: 200px;
 }
+
+
+
+/*DASHBOARD---------------------------------
+
+/* heading*/
+.title{
+  text-align: center;
+  text-decoration: underline;
+}
+
+
+/* table */
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  overflow:hidden;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Column Size for thead */
+th{
+  width: 16.6%;
+
+}
+
+/* Column size for tbody */
+td{
+  width: 16.6%;
+}
+
+th {
+  letter-spacing: 2px;
+  padding: 10px;
+  text-align: center;
+  background-color: #393a44;
+  color: white;
+}
+
+th:last-of-type{
+  border-radius: 0 4px 0 0;
+}
+
+th:first-of-type{
+  border-radius: 4px 0 0 0;
+}
+
+td {
+  letter-spacing: 1px;
+  overflow-x:hidden;
+  overflow-y:hidden;
+  font-size: 12px;
+  padding: 10px;
+  text-align: center;
+}
+
+tr:nth-child(even){
+  background-color: rgba(239, 237, 235, 0.937);
+}
