@@ -32,20 +32,22 @@ function Dashboard({ date }) {
     let filteredRes = reservations.filter(res => res !== resToDelete);
     setReservations(filteredRes)
   }
+
   
-  function sortReservationsByTime(array){
-    return array.sort((a,b)=>{
-        return a.reservation_time.localeCompare(b.reservation_time)
-    })
-  }
+  // function sortReservationsByTime(array){
+  //   return array.sort((a,b)=>{
+  //       return a.reservation_time.localeCompare(b.reservation_time)
+  //   })
+  // }
 
   //sort and filter reservations by day
-  let sortedRes = sortReservationsByTime(reservations)
-  let filteredReservations = sortedRes.filter((res) => res.reservation_date === currentDate)
+  // let sortedRes = sortReservationsByTime(reservations)
+  // let filteredReservations = sortedRes.filter((res) => res.reservation_date === currentDate)
 
 
 
-  //console.log("dashb date:", date)
+  console.log("dashb date:", date)
+  console.log(reservations)
 
   function handleNext(event){
     event.preventDefault();
@@ -94,7 +96,7 @@ function Dashboard({ date }) {
 
           </thead>
           <tbody>
-              {filteredReservations.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
+              {reservations.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
           </tbody>
         </table>
       </div>

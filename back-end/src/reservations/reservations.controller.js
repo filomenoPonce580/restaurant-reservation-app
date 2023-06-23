@@ -41,20 +41,35 @@ function validatePeople(req,res,next){
 
 function validateDate(req,res,next){
   //checks for input data
-  console.log(req.body.data.reservation_date instanceof Date)
-    if(!req.body.data.reservation_date || req.body.data.reservation_date instanceof Date === false){
-        next({
-            status: 400,
-            message: 'reservation_date must be a date'
-        });
-    } else {
-        next();
-    }
+  let dateFormat = /^\d{4}\-\d{1,2}\-\d{1,2}$/
+  console.log(req.body.data.reservation_date.match(dateFormat))
+  if(!req.body.data.reservation_date.match(dateFormat)){
+      next({
+          status: 400,
+          message: 'reservation_date must be a date'
+      });
+  } else {
+      next();
+  }
+}
+
+function validateTime(req,res,next){
+  //checks for input data
+  let timeFormat = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
+  console.log(req.body.data.reservation_time)
+  if(!req.body.data.reservation_time.match(timeFormat)){
+      next({
+          status: 400,
+          message: 'reservation_time must be a valid'
+      });
+  } else {
+      next();
+  }
 }
 
 ///--------------------------------------------
 
 module.exports = {
   list,
-  create: [hasRequiredProperties, validatePeople, asyncErrorBoundary(create)]
+  create: [hasRequiredProperties, validatePeople, validateDate, validateTime, asyncErrorBoundary(create)]
 };
