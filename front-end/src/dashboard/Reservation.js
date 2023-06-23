@@ -13,8 +13,6 @@ function Reservation({data, deleteRes}){
         return time.join(''); // return adjusted time or original string
     }
 
-    console.log(data.reservation_time.slice(0,-3))
-
     let newTime = tConvert(data.reservation_time)
 
     return (
@@ -24,6 +22,7 @@ function Reservation({data, deleteRes}){
             <td>{data.people}</td>
             <td>{newTime}</td>
             <td>{data.mobile_number}</td>
+            <td>{data.reservation_date}</td>
             <td><button name="delete"
                     className="btn btn-danger" 
                     onClick={()=> deleteRes(data)}>Delete</button></td>

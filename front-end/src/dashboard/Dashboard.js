@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "./Reservation";
+import {BrowserRouter as Router, Route, Link, Switch, useHistory, useLocation, useRouteMatch, useParams} from "react-router-dom"
+import { previous, next } from "../utils/date-time";
+
 
 /**
  * Defines the dashboard page.
@@ -12,6 +15,7 @@ import Reservation from "./Reservation";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [currentDate, setCurrentDate] = useState(date)
 
   useEffect(loadDashboard, [date]);
 
@@ -29,18 +33,50 @@ function Dashboard({ date }) {
     setReservations(filteredRes)
   }
   
-  console.log(reservations)
   function sortReservationsByTime(array){
     return array.sort((a,b)=>{
         return a.reservation_time.localeCompare(b.reservation_time)
     })
   }
+
+  //sort and filter reservations by day
   let sortedRes = sortReservationsByTime(reservations)
+  let filteredReservations = sortedRes.filter((res) => res.reservation_date === currentDate)
+
+
+
+  //console.log("dashb date:", date)
+
+  function handleNext(event){
+    event.preventDefault();
+    setCurrentDate(next(currentDate))
+    //console.log(currentDate)
+  }
+
+  function handlePrevious(event){
+    event.preventDefault();
+    setCurrentDate(previous(currentDate))
+    //console.log(currentDate)
+  }
+
+
   return (
     <main>
       <h1 className="title">Dashboard</h1>
       <div className=" mb-3 title">
-        <h4 className="mb-0">Reservations for date {date}</h4>
+        <h4 className="mb-0">Reservations for date {currentDate}</h4>
+
+
+              <form>
+                <div className="form-group">
+                    <Link to={`/reservations?date=${currentDate}`}><button className="btn btn-secondary m-1"onClick={handlePrevious}> Previous </button></Link>
+                    <Link to={`/reservations?date=${date}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
+                    <Link to={`/reservations?date=${currentDate}`}><button className="btn btn-secondary m-1 dashBrdBtn" onClick={handleNext}>Next</button></Link>                   
+                </div>
+              </form>  
+
+
+        
       </div>
       <ErrorAlert error={reservationsError} />
 
@@ -53,11 +89,12 @@ function Dashboard({ date }) {
               <th>Party Size</th>
               <th>Time</th>
               <th>Phone</th>
+              <th>Date</th>
               <th>Action</th>
 
           </thead>
           <tbody>
-              {sortedRes.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
+              {filteredReservations.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
           </tbody>
         </table>
       </div>

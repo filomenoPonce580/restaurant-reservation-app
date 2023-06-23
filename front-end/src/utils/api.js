@@ -60,10 +60,38 @@ async function fetchJson(url, options, onCancel) {
 
 export async function listReservations(params, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
+
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
+  // console.log(url)
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+
+/**
+ * Saves reservation to the database (public/data/db.json).
+ * There is no validation done on the deck object, any object will be saved.
+ * @param reservation
+ *  the deck to save, which must not have an `id` property
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<reservation>}
+ *  a promise that resolves the saved deck, which will now have an `id` property.
+ */
+ export async function createReservation(reservation, signal) {
+  console.log("res", reservation)
+
+  const url = `${API_BASE_URL}/reservations`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({data: reservation}),
+    signal,
+  };
+  console.log("options", options)
+
+  return await fetchJson(url, options, {});
 }

@@ -63,3 +63,7 @@ td {
 tr:nth-child(even){
   background-color: rgba(239, 237, 235, 0.937);
 }
+
+.dashBrdBtn{
+  width: 100px;
+}
