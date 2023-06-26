@@ -92,6 +92,35 @@ function validateTime(req,res,next){
   }
 }
 
+function validateOpenResTime(req, res, next) {
+  const reservationTime = req.body.data.reservation_time;
+  const [hours, minutes] = reservationTime.split(":");
+  const reservationDateTime = new Date();
+  reservationDateTime.setUTCHours(hours, minutes, 0, 0);
+  const currentTime = new Date();
+
+  const openingTime = new Date();
+  openingTime.setUTCHours(10, 30, 0, 0); // Sets the opening time to 10:30 AM UTC
+
+  const closingTime = new Date();
+  closingTime.setUTCHours(21, 30, 0, 0); // Sets the last valid time to 9:30 PM UTC
+
+  if (reservationDateTime < openingTime || reservationDateTime >= closingTime) {
+    return next({
+      status: 400,
+      message: "Please select a reservation time between 10:30 AM and 9:30 PM.",
+    });
+  }
+  if(reservationDateTime < currentTime){
+    return next({
+      status: 400,
+      message: "Please select a reservation time after the current time",
+    });
+  }
+
+  next();
+}
+
 ///--------------------------------------------
 
 module.exports = {
@@ -102,6 +131,7 @@ module.exports = {
     validateDate,
     validateTime,
     validateOpenResDate,
+    validateOpenResTime,
     asyncErrorBoundary(create)
   ]
 };

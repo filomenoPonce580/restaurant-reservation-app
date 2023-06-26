@@ -32,19 +32,9 @@ function NewResForm(){
         //convert party size into number for backend
         formData.people = Number(formData.people)
 
-        //no reservations on tuesday
-        const dateString = formData.reservation_date;
-        const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
-        if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
-          setErrorMessage(`Sorry, we are closed on Tuesdays. Please select another day`);
-        }
-        
-        //no reservations for previous dates
-        const today = new Date()
-        today.setUTCHours(0,0,0,0)
-        if(date < today){
-            setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
-        }
+        //validate time & date
+        validateDay(formData.reservation_date)
+        validateTime(formData.reservation_time)
 
         const abortController = new AbortController()
         createReservation(formData, abortController.signal)
@@ -54,13 +44,49 @@ function NewResForm(){
         return () => abortController.abort()
     }
 
+    function validateDay(dateString){
+        //no reservations on tuesday
+        const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
+        if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
+          setErrorMessage(`Sorry, we are closed on Tuesdays. Please select another day`);
+        }
+                
+        //no reservations for previous dates
+        const today = new Date()
+        today.setUTCHours(0,0,0,0)
+        if(date < today){
+            setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
+        } 
+    }
+
+    function validateTime(timeString){
+        //access hours&minutes from string
+        const [hours, minutes] = timeString.split(":")
+
+        //inject hours/minutes into new date object
+        const resTime = new Date();
+        resTime.setUTCHours(hours, minutes, 0, 0)
+
+        //set open, last res, and current times
+        const openingTime = new Date();
+        openingTime.setUTCHours(10, 30, 0, 0)
+        const lastResTime = new Date();
+        lastResTime.setUTCHours(21, 30, 0, 0)
+        const currentTime = new Date()
+
+        //compare values, if invalid set error
+        if(resTime < openingTime || resTime > lastResTime || resTime < currentTime){
+            setErrorMessage(`Please select a valid time. Reservations are open from 10:30 AM to 9:30 PM.`)
+        }
+    }
 
     return(
         <React.Fragment>
             <h1>Create New Reservation</h1>
 
             <form>
-
+                {/* Form Input Fields */}
+                {/* Top Row: First & Last Names, Phone# */}
                 <div className="form-row">
                     <div className="form-group col-md-4">
                         <label htmlFor="first_name">First Name</label>
@@ -96,6 +122,7 @@ function NewResForm(){
                     </div>
                 </div>
 
+                {/* Bottom Row: PartySize(people) & Date, Time# */}
                 <div className="form-row">
                     <div className="form-group col-md-4">
                         <label htmlFor="people">Party Size</label>
@@ -140,6 +167,7 @@ function NewResForm(){
                     </div>
                 )}
 
+                {/* Cancel & submit buttons */}
                 <div className="form-group">
                     <button 
                         className="btn btn-secondary m-1"
