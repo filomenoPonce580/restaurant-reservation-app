@@ -16,6 +16,7 @@ function NewResForm(){
         reservation_time: ''
     }
     const [formData, setFormData] = useState(initialFormData)
+    const [errorMessage, setErrorMessage] = useState("");
   
     function handleInputChange(event){
         event.preventDefault();
@@ -27,7 +28,24 @@ function NewResForm(){
 
     function handleSubmit(event){
         event.preventDefault()
+
+        //convert party size into number for backend
         formData.people = Number(formData.people)
+
+        //no reservations on tuesday
+        const dateString = formData.reservation_date;
+        const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
+        if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
+          setErrorMessage(`Sorry, we are closed on Tuesdays. Please select another day`);
+        }
+        
+        //no reservations for previous dates
+        const today = new Date()
+        today.setUTCHours(0,0,0,0)
+        if(date < today){
+            setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
+        }
+
         const abortController = new AbortController()
         createReservation(formData, abortController.signal)
             .then((savedRes) => {
@@ -115,9 +133,27 @@ function NewResForm(){
                     </div>
                 </div>
 
+                {/* Error message */}
+                {errorMessage && (
+                    <div className="alert alert-danger" role="alert">
+                        {errorMessage}
+                    </div>
+                )}
+
                 <div className="form-group">
-                    <button className="btn btn-secondary m-1" onClick={() => history.push('/')}> Cancel</button>
-                    <button type="submit" className="btn btn-primary m-1" onClick={handleSubmit}>Submit</button>                    
+                    <button 
+                        className="btn btn-secondary m-1"
+                        onClick={() => history.push('/')}
+                        > 
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="btn btn-primary m-1"
+                        onClick={handleSubmit}
+                        >
+                        Submit
+                    </button>                    
                 </div>
             </form>        
         </React.Fragment>

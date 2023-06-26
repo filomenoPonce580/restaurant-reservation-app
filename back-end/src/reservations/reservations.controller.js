@@ -54,6 +54,30 @@ function validateDate(req,res,next){
   }
 }
 
+function validateOpenResDate(req, res, next) {
+  const reservationDate = req.body.data.reservation_date;
+  const date = new Date(reservationDate + "T00:00:00Z");
+
+  if (date.getUTCDay() === 2) {
+    return next({
+      status: 400,
+      message: "Sorry, we are closed on Tuesdays.",
+    });
+  }
+
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  if (date < today) {
+    return next({
+      status: 400,
+      message: "Please select a future date for your reservation.",
+    });
+  }
+
+  next();
+}
+
 function validateTime(req,res,next){
   //checks for input data
   let timeFormat = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
@@ -72,5 +96,12 @@ function validateTime(req,res,next){
 
 module.exports = {
   list,
-  create: [hasRequiredProperties, validatePeople, validateDate, validateTime, asyncErrorBoundary(create)]
+  create: [
+    hasRequiredProperties,
+    validatePeople,
+    validateDate,
+    validateTime,
+    validateOpenResDate,
+    asyncErrorBoundary(create)
+  ]
 };
