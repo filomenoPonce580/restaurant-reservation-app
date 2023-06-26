@@ -80,12 +80,12 @@ function NewResForm(){
                     <div className="form-group col-md-4">
                         <label htmlFor="people">Party Size</label>
                         <input
-                            type="number"
+                            type="text"
                             className="form-control"
                             name="people"
                             id="people"
                             placeholder="2"
-                            value={formData.people}
+                            value={Number(formData.people)}
                             onChange={handleInputChange}/>
                     </div>
                     <div className="form-group col-md-4">
@@ -96,7 +96,7 @@ function NewResForm(){
                             name="reservation_date"
                             id="reservation_date"
                             placeholder=""
-                            value={formatAsDate(formData.reservation_date)}
+                            value={formData.reservation_date}
                             onChange={handleInputChange}/>
                     </div>
                     <div className="form-group col-md-4">
@@ -114,7 +114,7 @@ function NewResForm(){
                 </div>
 
                 <div className="form-group">
-                    <button className="btn btn-secondary m-1"> Cancel</button>
+                    <button className="btn btn-secondary m-1" onClick={() => history.goBack()}> Cancel</button>
                     <button type="submit" className="btn btn-primary m-1" onClick={handleSubmit}>Submit</button>                    
                 </div>
             </form>        

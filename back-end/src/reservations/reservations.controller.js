@@ -29,6 +29,7 @@ async function create(req, res, next) {
 //---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
 function validatePeople(req,res,next){
   //checks for input data
+  var isNumber = /^\d+$/
     if(!req.body.data.people || typeof req.body.data.people !== "number" ){
         next({
             status: 400,
@@ -42,7 +43,7 @@ function validatePeople(req,res,next){
 function validateDate(req,res,next){
   //checks for input data
   let dateFormat = /^\d{4}\-\d{1,2}\-\d{1,2}$/
-  console.log(req.body.data.reservation_date.match(dateFormat))
+  //console.log(req.body.data.reservation_date.match(dateFormat))
   if(!req.body.data.reservation_date.match(dateFormat)){
       next({
           status: 400,
@@ -56,7 +57,7 @@ function validateDate(req,res,next){
 function validateTime(req,res,next){
   //checks for input data
   let timeFormat = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
-  console.log(req.body.data.reservation_time)
+  //console.log(req.body.data.reservation_time)
   if(!req.body.data.reservation_time.match(timeFormat)){
       next({
           status: 400,

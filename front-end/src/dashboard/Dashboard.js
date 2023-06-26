@@ -15,9 +15,9 @@ import { previous, next } from "../utils/date-time";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [currentDate, setCurrentDate] = useState(date)
 
   useEffect(loadDashboard, [date]);
+
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -25,6 +25,7 @@ function Dashboard({ date }) {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+      //console.log(reservations)
     return () => abortController.abort();
   }
 
@@ -33,47 +34,18 @@ function Dashboard({ date }) {
     setReservations(filteredRes)
   }
 
-  
-  // function sortReservationsByTime(array){
-  //   return array.sort((a,b)=>{
-  //       return a.reservation_time.localeCompare(b.reservation_time)
-  //   })
-  // }
-
-  //sort and filter reservations by day
-  // let sortedRes = sortReservationsByTime(reservations)
-  // let filteredReservations = sortedRes.filter((res) => res.reservation_date === currentDate)
-
-
-
-  console.log("dashb date:", date)
-  console.log(reservations)
-
-  function handleNext(event){
-    event.preventDefault();
-    setCurrentDate(next(currentDate))
-    //console.log(currentDate)
-  }
-
-  function handlePrevious(event){
-    event.preventDefault();
-    setCurrentDate(previous(currentDate))
-    //console.log(currentDate)
-  }
-
-
   return (
     <main>
       <h1 className="title">Dashboard</h1>
       <div className=" mb-3 title">
-        <h4 className="mb-0">Reservations for date {currentDate}</h4>
+        <h4 className="mb-0">Reservations for date {date}</h4>
 
 
               <form>
                 <div className="form-group">
-                    <Link to={`/reservations?date=${currentDate}`}><button className="btn btn-secondary m-1"onClick={handlePrevious}> Previous </button></Link>
-                    <Link to={`/reservations?date=${date}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
-                    <Link to={`/reservations?date=${currentDate}`}><button className="btn btn-secondary m-1 dashBrdBtn" onClick={handleNext}>Next</button></Link>                   
+                    <Link to={`/dashboard?date=${previous(date)}`}><button className="btn btn-secondary m-1"> Previous </button></Link>
+                    <Link to={`/dashboard?date=${date}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
+                    <Link to={`/dashboard?date=${next(date)}`}><button className="btn btn-secondary m-1 dashBrdBtn">Next</button></Link>                   
                 </div>
               </form>  
 
@@ -85,7 +57,7 @@ function Dashboard({ date }) {
       <div className="recipe-list">
         <table>
           <thead className="tableHead">
-            
+            <tr>
               <th>First Name</th>
               <th>Last Name</th>
               <th>Party Size</th>
@@ -93,7 +65,7 @@ function Dashboard({ date }) {
               <th>Phone</th>
               <th>Date</th>
               <th>Action</th>
-
+            </tr>
           </thead>
           <tbody>
               {reservations.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
