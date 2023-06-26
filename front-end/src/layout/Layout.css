@@ -64,6 +64,10 @@ tr:nth-child(even){
   background-color: rgba(239, 237, 235, 0.937);
 }
 
+.cancel{
+  color: white;
+}
+
 .dashBrdBtn{
   width: 100px;
 }

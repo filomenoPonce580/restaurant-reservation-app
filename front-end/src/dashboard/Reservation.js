@@ -22,10 +22,11 @@ function Reservation({data, deleteRes}){
             <td>{data.people}</td>
             <td>{newTime}</td>
             <td>{data.mobile_number}</td>
-            <td>{data.reservation_date}</td>
             <td><button name="delete"
-                    className="btn btn-danger" 
-                    onClick={()=> deleteRes(data)}>Delete</button></td>
+                    className="btn btn-primary dashBrdBtn">✓</button></td>
+            <td><button name="delete"
+                    className="btn btn-danger dashBrdBtn cancel" 
+                    onClick={()=> deleteRes(data)}>	&#10005; </button></td>
         </tr>
    )
     

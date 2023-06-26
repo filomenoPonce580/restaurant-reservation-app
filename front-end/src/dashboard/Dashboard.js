@@ -33,6 +33,8 @@ function Dashboard({ date }) {
     setReservations(filteredRes)
   }
 
+  const placeholderTables = [1,2,3,4]
+
   return (
     <main>
       <h1 className="title">Dashboard</h1>
@@ -53,7 +55,7 @@ function Dashboard({ date }) {
       </div>
       <ErrorAlert error={reservationsError} />
 
-      <div className="recipe-list">
+      <div className="">
         <table>
           <thead className="tableHead">
             <tr>
@@ -62,12 +64,27 @@ function Dashboard({ date }) {
               <th>Party Size</th>
               <th>Time</th>
               <th>Phone</th>
-              <th>Date</th>
-              <th>Action</th>
+              <th>Seat</th>
+              <th>Cancel</th>
             </tr>
           </thead>
           <tbody>
               {reservations.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
+          </tbody>
+        </table>
+      </div>
+
+      <h1>Tables</h1>
+      <div className="">
+        <table>
+          <thead className="tableHead">
+            <tr>
+              <th>Table Name</th>
+              <th>Capacity</th>
+            </tr>
+          </thead>
+          <tbody>
+              {placeholderTables.map((oneTable, indx) => <h3>Table info</h3>)}
           </tbody>
         </table>
       </div>

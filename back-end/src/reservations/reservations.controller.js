@@ -103,7 +103,7 @@ function validateOpenResTime(req, res, next) {
   openingTime.setUTCHours(10, 30, 0, 0); // Sets the opening time to 10:30 AM UTC
 
   const closingTime = new Date();
-  closingTime.setUTCHours(21, 30, 0, 0); // Sets the last valid time to 9:30 PM UTC
+  closingTime.setUTCHours(21, 30, 0, 0); // Set the last valid time to 9:30 PM UTC
 
   if (reservationDateTime < openingTime || reservationDateTime >= closingTime) {
     return next({
@@ -112,10 +112,16 @@ function validateOpenResTime(req, res, next) {
     });
   }
   if(reservationDateTime < currentTime){
-    return next({
-      status: 400,
-      message: "Please select a reservation time after the current time",
-    });
+    //reso in valid times, check for future date
+    const reservationDate = new Date(req.body.data.reservation_date);
+    const rightNow = new Date();
+
+    if(reservationDate < rightNow){
+      return next({
+        status: 400,
+        message: "Please select a reservation time after the current time",
+      });      
+    }
   }
 
   next();
