@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from "react";
-import {BrowserRouter as Router, Route, Link, useHistory} from "react-router-dom"
+import React, {useState} from "react";
+import {BrowserRouter as Router, useHistory} from "react-router-dom"
+//import {BrowserRouter as Router, Route, Link, useHistory} from "react-router-dom"
 import { createReservation } from "../utils/api";
 import { formatAsDate } from "../utils/date-time";
 
@@ -26,6 +27,7 @@ function NewResForm(){
 
     function handleSubmit(event){
         event.preventDefault()
+        formData.people = Number(formData.people)
         const abortController = new AbortController()
         createReservation(formData, abortController.signal)
             .then((savedRes) => {
@@ -39,7 +41,7 @@ function NewResForm(){
         <React.Fragment>
             <h1>Create New Reservation</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form>
 
                 <div className="form-row">
                     <div className="form-group col-md-4">
@@ -85,7 +87,7 @@ function NewResForm(){
                             name="people"
                             id="people"
                             placeholder="2"
-                            value={Number(formData.people)}
+                            value={formData.people}
                             onChange={handleInputChange}/>
                     </div>
                     <div className="form-group col-md-4">
@@ -114,7 +116,7 @@ function NewResForm(){
                 </div>
 
                 <div className="form-group">
-                    <button className="btn btn-secondary m-1" onClick={() => history.goBack()}> Cancel</button>
+                    <button className="btn btn-secondary m-1" onClick={() => history.push('/')}> Cancel</button>
                     <button type="submit" className="btn btn-primary m-1" onClick={handleSubmit}>Submit</button>                    
                 </div>
             </form>        
