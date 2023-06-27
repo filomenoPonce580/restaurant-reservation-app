@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "./Reservation";
+import Table from "./Table";
 import {BrowserRouter as Router, Route, Link, Switch, useHistory, useLocation, useRouteMatch, useParams} from "react-router-dom"
 import { previous, next } from "../utils/date-time";
 
@@ -18,6 +19,14 @@ function Dashboard({ date }) {
 
   useEffect(loadDashboard, [date]);
 
+  //placehoder tableData
+  const tableData = [
+    {"id": 1, table_name: "#1", capacity: 4, status: "Occupied"},
+    {"id": 2, table_name: "#2", capacity: 8, status: "Free"},
+    {"id": 3, table_name: "Bar#1", capacity: 2, status: "Free"},
+    {"id": 4, table_name: "Bar#2", capacity: 3, status: "occupied"}
+  ]
+
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -32,8 +41,6 @@ function Dashboard({ date }) {
     let filteredRes = reservations.filter(res => res !== resToDelete);
     setReservations(filteredRes)
   }
-
-  const placeholderTables = [1,2,3,4]
 
   return (
     <main>
@@ -81,10 +88,11 @@ function Dashboard({ date }) {
             <tr>
               <th>Table Name</th>
               <th>Capacity</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-              {placeholderTables.map((oneTable, indx) => <h3>Table info</h3>)}
+              {tableData.map((oneTable, indx) => <Table key={indx} data={oneTable}/>)}
           </tbody>
         </table>
       </div>

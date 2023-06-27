@@ -5,8 +5,9 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
-import NewResForm from "../Forms/NewResForm"
-import TableForm from "../Forms/TableForm"
+import NewResForm from "../Forms/NewResForm";
+import TableForm from "../Forms/TableForm";
+import SeatRes from "../Forms/SeatRes";
 import useQuery from "../utils/useQuery";
 
 /**
@@ -43,6 +44,10 @@ function Routes() {
 
       <Route path="/tables/new">
         <TableForm />
+      </Route>
+
+      <Route path="/reservations/:reservationId/seat">
+        <SeatRes />
       </Route>
 
       <Route>
