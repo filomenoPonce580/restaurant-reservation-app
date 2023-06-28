@@ -14,7 +14,7 @@ function create(res) {
       .insert(res)
       .returning("*")
       .then((createdRecords) => createdRecords[0]);
-  }
+}
 
 module.exports = {
     list,

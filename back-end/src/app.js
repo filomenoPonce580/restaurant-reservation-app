@@ -12,11 +12,13 @@ const notFound = require("./errors/notFound");
 app.use(cors());
 app.use(express.json());
 
-//define router
+//define routers
 const reservationsRouter = require("./reservations/reservations.router");
+const tablesRouter = require("./tables/tables.router")
 
 //point routes to routers
 app.use("/reservations", reservationsRouter);
+app.use("/tables", tablesRouter)
 
 app.use(notFound);
 app.use(errorHandler);

@@ -32,9 +32,8 @@ function NewResForm(){
         //convert party size into number for backend
         formData.people = Number(formData.people)
 
-        //validate time & date
+        //validate date&time.... Date validator calls time validator
         validateDay(formData.reservation_date)
-        validateTime(formData.reservation_time)
 
         const abortController = new AbortController()
         createReservation(formData, abortController.signal)
@@ -49,14 +48,17 @@ function NewResForm(){
         const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
         if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
           setErrorMessage(`Sorry, we are closed on Tuesdays. Please select another day`);
+        } else {
+            //no reservations for previous dates
+            const today = new Date()
+            today.setUTCHours(0,0,0,0)
+            if(date < today){
+                setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
+            }else{
+                validateTime(formData.reservation_time)
+            }
         }
-                
-        //no reservations for previous dates
-        const today = new Date()
-        today.setUTCHours(0,0,0,0)
-        if(date < today){
-            setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
-        } 
+
     }
 
     function validateTime(timeString){

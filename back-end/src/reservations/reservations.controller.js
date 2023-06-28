@@ -29,21 +29,20 @@ async function create(req, res, next) {
 //---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
 function validatePeople(req,res,next){
   //checks for input data
-  var isNumber = /^\d+$/
-    if(!req.body.data.people || typeof req.body.data.people !== "number" ){
-        next({
-            status: 400,
-            message: 'people must be a number'
-        });
-    } else {
-        next();
-    }
+  //var isNumber = /^\d+$/
+  if(!req.body.data.people || typeof req.body.data.people !== "number" ){
+      next({
+          status: 400,
+          message: 'people must be a number'
+      });
+  } else {
+      next();
+  }
 }
 
 function validateDate(req,res,next){
   //checks for input data
   let dateFormat = /^\d{4}\-\d{1,2}\-\d{1,2}$/
-  //console.log(req.body.data.reservation_date.match(dateFormat))
   if(!req.body.data.reservation_date.match(dateFormat)){
       next({
           status: 400,
@@ -111,17 +110,31 @@ function validateOpenResTime(req, res, next) {
       message: "Please select a reservation time between 10:30 AM and 9:30 PM.",
     });
   }
+
+
+  //As stated within function, might not need this block of code
   if(reservationDateTime < currentTime){
     //reso in valid times, check for future date
     const reservationDate = new Date(req.body.data.reservation_date);
     const rightNow = new Date();
 
-    if(reservationDate < rightNow){
-      return next({
-        status: 400,
-        message: "Please select a reservation time after the current time",
-      });      
+    let logs = {
+      "res" : reservationDateTime,
+      "open": openingTime,
+      "close": closingTime,
     }
+
+    /*
+    //not needed anymore, will hold on to this piece of code until finished
+    // if(reservationDate < rightNow){
+    //   return next({
+    //     status: 400,
+    //     message: `resDate: ${reservationDate}`,
+    //     message: Please select a reservation time after the current time. 
+    //   });      
+    // }
+
+    */
   }
 
   next();
@@ -134,9 +147,9 @@ module.exports = {
   create: [
     hasRequiredProperties,
     validatePeople,
-    validateDate,
-    validateTime,
+    validateDate, 
     validateOpenResDate,
+    validateTime,
     validateOpenResTime,
     asyncErrorBoundary(create)
   ]

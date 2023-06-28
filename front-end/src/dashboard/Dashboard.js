@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "./Reservation";
 import Table from "./Table";
 import {BrowserRouter as Router, Route, Link, Switch, useHistory, useLocation, useRouteMatch, useParams} from "react-router-dom"
-import { previous, next } from "../utils/date-time";
+import { previous, next, today } from "../utils/date-time";
 
 
 /**
@@ -16,17 +16,10 @@ import { previous, next } from "../utils/date-time";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([])
+  const [tablesError, setTablesError] = useState(null)
 
   useEffect(loadDashboard, [date]);
-
-  //placehoder tableData
-  const tableData = [
-    {"id": 1, table_name: "#1", capacity: 4, status: "Occupied"},
-    {"id": 2, table_name: "#2", capacity: 8, status: "Free"},
-    {"id": 3, table_name: "Bar#1", capacity: 2, status: "Free"},
-    {"id": 4, table_name: "Bar#2", capacity: 3, status: "occupied"}
-  ]
-
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -34,6 +27,9 @@ function Dashboard({ date }) {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    listTables(abortController.signal)
+      .then(setTables)
+      .catch(setTablesError)
     return () => abortController.abort();
   }
 
@@ -41,6 +37,9 @@ function Dashboard({ date }) {
     let filteredRes = reservations.filter(res => res !== resToDelete);
     setReservations(filteredRes)
   }
+
+  // console.log("T: ", typeof tables[0].capacity)
+  // console.log("R: ", typeof reservations[0].people)
 
   return (
     <main>
@@ -52,7 +51,7 @@ function Dashboard({ date }) {
               <form>
                 <div className="form-group">
                     <Link to={`/dashboard?date=${previous(date)}`}><button className="btn btn-secondary m-1"> Previous </button></Link>
-                    <Link to={`/dashboard?date=${date}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
+                    <Link to={`/dashboard?date=${today()}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
                     <Link to={`/dashboard?date=${next(date)}`}><button className="btn btn-secondary m-1 dashBrdBtn">Next</button></Link>                   
                 </div>
               </form>  
@@ -61,7 +60,6 @@ function Dashboard({ date }) {
         
       </div>
       <ErrorAlert error={reservationsError} />
-
       <div className="">
         <table>
           <thead className="tableHead">
@@ -81,7 +79,8 @@ function Dashboard({ date }) {
         </table>
       </div>
 
-      <h1>Tables</h1>
+      <h1 className="title">Tables</h1>
+      <ErrorAlert error={tablesError} />
       <div className="">
         <table>
           <thead className="tableHead">
@@ -92,7 +91,7 @@ function Dashboard({ date }) {
             </tr>
           </thead>
           <tbody>
-              {tableData.map((oneTable, indx) => <Table key={indx} data={oneTable}/>)}
+              {tables.map((oneTable, indx) => <Table key={indx} data={oneTable}/>)}
           </tbody>
         </table>
       </div>

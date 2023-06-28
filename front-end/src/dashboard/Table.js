@@ -5,9 +5,9 @@ function Table({data}){
     return (
         <tr>
             <td>{data.table_name}</td>
-            <td>{data.occupancy}</td>
+            <td>{data.capacity}</td>
             <td data-table-id-status={data.table_id}>
-                {data.status === "Occupied" ? "Occupied" : "Free"}
+                {!data.reservation_id ? "Free" : "Occupied"}
             </td>
         </tr>
    )

@@ -72,14 +72,14 @@ export async function listReservations(params, signal) {
 
 
 /**
- * Saves reservation to the database (public/data/db.json).
- * There is no validation done on the deck object, any object will be saved.
+ * Saves reservation to the database.
+ * There is no validation done on the reservation object, any object will be saved.
  * @param reservation
- *  the deck to save, which must not have an `id` property
+ *  the reservation to save, which must not have an `id` property
  * @param signal
  *  optional AbortController.signal
  * @returns {Promise<reservation>}
- *  a promise that resolves the saved deck, which will now have an `id` property.
+ *  a promise that resolves the saved reservation, which will now have an `id` property.
  */
  export async function createReservation(reservation, signal) {
 
@@ -90,7 +90,43 @@ export async function listReservations(params, signal) {
     body: JSON.stringify({data: reservation}),
     signal,
   };
-  //console.log("options", options)
+
+  return await fetchJson(url, options, {});
+}
+
+
+//---- Table API's--------
+/**
+ * Retrieves all existing tables.
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of tables saved in the database.
+ */
+
+ export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+
+/**
+ * Saves table to the database.
+ * There is no validation done on the table object, any object will be saved.
+ * @param table
+ *  the reservation to save, which must not have an `id` property
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<reservation>}
+ *  a promise that resolves the saved reservation, which will now have an `id` property.
+ */
+ export async function createTable(table, signal) {
+
+  const url = `${API_BASE_URL}/tables`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({data: table}),
+    signal,
+  };
 
   return await fetchJson(url, options, {});
 }
