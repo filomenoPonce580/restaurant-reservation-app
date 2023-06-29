@@ -16,6 +16,10 @@ router.route("/")
 router.route("/new")
     .post(controller.create)
     .all(methodNotAllowed)
+
+router.route("/:tableId/seat")
+    .put(controller.update)
+    .all(methodNotAllowed)
      
 module.exports = router;
  

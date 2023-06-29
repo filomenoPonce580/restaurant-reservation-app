@@ -6,6 +6,11 @@ const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_n
 /**
  * List handler for reservation resources
  */
+async function read(req, res, next){
+  res.json({data: res.locals.reservation})
+
+}
+
 async function list(req, res) {
   const reservation_date = req.query.date;
   const data = await service.list(reservation_date)
@@ -27,6 +32,18 @@ async function create(req, res, next) {
 
 
 //---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
+
+//check if reservation exists
+async function reservationExists(req, res, next){
+  const reservation = await service.read(req.params.reservationId);
+  if(reservation){
+    res.locals.reservation = reservation;
+    return next()
+  }
+  next({status:400, message: 'reservation not found'})
+}
+
+
 function validatePeople(req,res,next){
   //checks for input data
   //var isNumber = /^\d+$/
@@ -144,6 +161,7 @@ function validateOpenResTime(req, res, next) {
 
 module.exports = {
   list,
+  read: [asyncErrorBoundary(reservationExists), read],
   create: [
     hasRequiredProperties,
     validatePeople,
