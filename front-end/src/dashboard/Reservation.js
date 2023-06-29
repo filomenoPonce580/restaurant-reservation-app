@@ -1,4 +1,6 @@
 import React from "react";
+import {BrowserRouter as Router, Link} from "react-router-dom"
+
 
 function Reservation({data, deleteRes}){
     function tConvert (time) {
@@ -15,7 +17,7 @@ function Reservation({data, deleteRes}){
 
     let newTime = tConvert(data.reservation_time)
 
-    const reservationId = data.reservation_id
+    const reservation_id = data.reservation_id
 
     return (
         <tr>
@@ -25,12 +27,14 @@ function Reservation({data, deleteRes}){
             <td>{newTime}</td>
             <td>{data.mobile_number}</td>
             <td>
-                <a href={`reservations/${reservationId}/seat`}>
-                    <button onClick={()=>console.log(data)} name="seat"
+                <Link to={`/reservations/${reservation_id}/seat`}> 
+                    <button 
+                        name="seat"
                         className="btn btn-primary dashBrdBtn">
-                            ✓
-                    </button>
-                </a>
+                        Seat    
+                    </button>                                            
+                </Link>
+
             </td>
             <td>
                 <button name="delete"

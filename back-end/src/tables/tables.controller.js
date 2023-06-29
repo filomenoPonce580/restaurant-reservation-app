@@ -80,6 +80,7 @@ async function validateTableExists(req, res, next){
 }
 
 function validateDataAndResId(req, res, next){
+    console.log(req.body.data)
     if(!req.body.data){
         next({
             status: 400,

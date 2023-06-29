@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import {BrowserRouter as Router, useHistory} from "react-router-dom"
+import { createTable } from "../utils/api";
+import { today } from "../utils/date-time";
 
 function TableForm(){
     const history = useHistory()
@@ -23,19 +25,19 @@ function TableForm(){
 
         const isValidTableName = validateTableName(formData.table_name)
         const isValidCapacity = validateCapacity(formData.capacity)
-        console.log(isValidCapacity)
-        console.log(isValidTableName)
+        // console.log(isValidCapacity)
+        // console.log(isValidTableName)
 
-        if(isValidTableName && isValidCapacity){
-            formData.capacity = Number(formData.capacity)
+        if(isValidCapacity){
+            formData.capacity = Number(formData.capacity);
             console.log(formData)
+            //aborts only in useEffects
+            const abortController = new AbortController(); //only used in 1 context, if info that loads when visiting component AND its posible to nav away from component, ideally cancel requests
+            createTable(formData, abortController.signal)
+                .then((savedTable)=>{
+                    history.push(`/dashboard?date=${today()}`)
+                })
         }
-        // formData.capacity = Number(formData.capacity)
-        // if(formData.capacity){
-        //     console.log(formData)
-        // }else{
-        //     console.log(formData.capacity)
-        // }
     }
 
     function validateTableName(nameString){
@@ -79,7 +81,7 @@ function TableForm(){
             const isValidBar = validateBar(nameArray[0])
             const isValidTableNumber = validateTableNumber(nameArray[1])
             return isValidBar && isValidTableNumber
-        } else{                   //more than 2 words. invalid
+        } else{                                             //more than 2 words. invalid
             setErrorMessage("Please enter a table name in the format of #(number) or Bar #(number)")
             return false
         }
@@ -101,7 +103,7 @@ function TableForm(){
 
 
     return(
-        <React.Fragment>
+        <Router>
             <h1>Create New Table</h1>
 
             <form>
@@ -144,7 +146,7 @@ function TableForm(){
                 <div className="form-group">
                     <button 
                         className="btn btn-secondary m-1"
-                        onClick={() => history.push('/')}
+                        onClick={() => history.push(`/reservations/new`)}
                         > 
                         Cancel
                     </button>
@@ -157,7 +159,7 @@ function TableForm(){
                     </button>                    
                 </div>
             </form>        
-        </React.Fragment>
+        </Router>
     )
 }
 

@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from "react"
 import {BrowserRouter as Router, useHistory, useParams} from "react-router-dom"
+import { listTables, updateTable } from "../utils/api"
+import { today } from "../utils/date-time"
 
 function SeatRes(){
     const { reservationId } = useParams()
-    //console.log("reso id: ", reservationId)
     const history = useHistory()
 
     //placehoder tableData
@@ -16,18 +17,19 @@ function SeatRes(){
     const [tables, setTables] = useState([]);
     const [selectedTableId, setSelectedTableId] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
-    console.log("first log: ", selectedTableId)
 
     function loadPage(){
-        setTables(tableData)
-        console.log("tables: ", tables)
+        const abortController = new AbortController();
+        setErrorMessage(null);
+        listTables(abortController.signal)
+            .then(setTables)
+            .catch(setErrorMessage)
+        //setTables(tableData)
     }
-    console.log(tables)
+
     useEffect(loadPage, []);
 
     function handleSelectChange(event){
-        console.log("event.target.value(tableID): ", event.target.value)
-        console.log("selectedTableID(before setting): ", selectedTableId)
         setSelectedTableId(event.target.value);
     };
 
@@ -35,6 +37,17 @@ function SeatRes(){
         event.preventDefault();
         setErrorMessage(null);
 
+        //grab selected table data
+        const selectedTable = tables.find((table, indx)=>{
+            return table.table_id === Number(selectedTableId)
+        })
+
+        //PUT request.. on submit, we send api request to /tables/:tableId/seat
+        const abortController = new AbortController();
+        updateTable( reservationId, selectedTable.table_id, abortController.signal)
+            .then(res => {
+                history.push(`/dashboard?date=${today()}`)
+            })
     }
 
     const handleCancel = () => {
@@ -59,14 +72,14 @@ function SeatRes(){
                         required>
                         <option value="">Select a table</option>
                         {tables.map((table) => (
-                            <option key={table.id} id={table.id} value={table.id}>
+                            <option key={table.table_id} id={table.table_id} value={table.table_id}>
                             {`${table.table_name} - ${table.capacity}`}
                             </option>
                         ))}
                     </select>
                 </div>
 
-                <button type="submit" className="btn btn-primary mr-2">
+                <button type="submit" className="btn btn-primary mr-2" onClick={handleSubmit}>
                     Submit
                 </button>
                 <button type="button" className="btn btn-secondary" onClick={handleCancel}>

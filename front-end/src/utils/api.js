@@ -130,3 +130,23 @@ export async function listReservations(params, signal) {
 
   return await fetchJson(url, options, {});
 }
+
+/**
+ * Updates an existing table
+ * @param updatedTable
+ *  the table to save, which must have an `id` property.
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<Error|*>}
+ *  a promise that resolves to the updated table.
+ */
+ export async function updateTable(reservation_id, table_id, signal) {
+  const url = `${API_BASE_URL}/tables/${table_id}/seat`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({data: {reservation_id}}),
+    signal,
+  };
+  return await fetchJson(url, options, {});
+}
