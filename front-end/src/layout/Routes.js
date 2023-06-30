@@ -8,6 +8,7 @@ import { today } from "../utils/date-time";
 import NewResForm from "../Forms/NewResForm";
 import TableForm from "../Forms/TableForm";
 import SeatRes from "../Forms/SeatRes";
+import Search from "../Forms/Search";
 import useQuery from "../utils/useQuery";
 
 /**
@@ -19,9 +20,9 @@ import useQuery from "../utils/useQuery";
  */
 function Routes() {
 
-
   const query = useQuery();
   const date = query.get("date")
+  const mobile_number = query.get("mobile_number")
 
   return (
     <Switch>
@@ -48,6 +49,10 @@ function Routes() {
 
       <Route path="/reservations/:reservationId/seat">
         <SeatRes />
+      </Route>
+
+      <Route path="/search">
+        <Search mobile_number={mobile_number}/>
       </Route>
 
       <Route>

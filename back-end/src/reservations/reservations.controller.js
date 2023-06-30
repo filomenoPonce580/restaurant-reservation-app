@@ -11,14 +11,27 @@ async function read(req, res, next){
 }
 
 async function list(req, res) {
-  const reservation_date = req.query.date;
-  const resList = await service.list(reservation_date)
 
-  const data = resList.filter((res)=>{
-    return res.status !== "finished"
-  })
+  if(req.query.date){
+    const reservation_date = req.query.date;
+    const resList = await service.list(reservation_date)
 
-  res.json({data});
+    const data = resList.filter((res)=>{
+      return res.status !== "finished"
+    })
+
+    res.json({data});
+  }
+
+  if(req.query.mobile_number){
+    const number = req.query.mobile_number
+    const data = await service.search(number)
+
+    console.log(number)
+    console.log(data)
+
+    res.json({data})
+  }
 }
 
 async function create(req, res, next) {
