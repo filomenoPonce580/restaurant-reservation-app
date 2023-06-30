@@ -12,7 +12,12 @@ async function read(req, res, next){
 
 async function list(req, res) {
   const reservation_date = req.query.date;
-  const data = await service.list(reservation_date)
+  const resList = await service.list(reservation_date)
+
+  const data = resList.filter((res)=>{
+    return res.status !== "finished"
+  })
+
   res.json({data});
 }
 
@@ -31,16 +36,12 @@ async function create(req, res, next) {
 
 async function update(req, res, next) {
   const requestInfo = req.body.data.status
-  console.log(requestInfo)
 
   const reservation = res.locals.reservation
-
   const newReservation = {
     ...reservation,
     status: requestInfo 
   }
-
-  console.log(newReservation)
 
   await service.update(newReservation)
 
@@ -59,9 +60,26 @@ async function reservationExists(req, res, next){
     res.locals.reservation = reservation;
     return next()
   }
-  next({status:400, message: 'reservation not found'})
+  next({status:404, message: `reservation_id ${req.params.reservationId} not found`})
 }
 
+function validateBookedStatus(req, res, next){
+  const status = req.body.data.status;
+
+  if(status === 'seated'){
+    next({
+      status: 400,
+      message: `status can not be "seated"`
+    })
+  } else if (status === 'finished'){
+    next({
+      status: 400,
+      message: `status can not be "finished"`
+    })
+  } else {
+    next()
+  }
+}
 
 function validatePeople(req,res,next){
   //checks for input data
@@ -116,7 +134,6 @@ function validateOpenResDate(req, res, next) {
 function validateTime(req,res,next){
   //checks for input data
   let timeFormat = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
-  //console.log(req.body.data.reservation_time)
   if(!req.body.data.reservation_time.match(timeFormat)){
       next({
           status: 400,
@@ -176,6 +193,31 @@ function validateOpenResTime(req, res, next) {
   next();
 }
 
+//--validations for updating status
+function validateNewStatus(req, res, next){
+  const status = req.body.data.status
+  if (status === "booked" || status === "seated" || status === "finished"){
+    next()
+  } else {
+    next({
+      status: 400,
+      message: "unknown status"
+    })
+  }
+}
+
+function validateCurrentResStatus(req, res, next){
+  const reservation = res.locals.reservation;
+  if(reservation.status === "finished"){
+    next({
+      status: 400,
+      message: "a finished reservation cannot be updated"
+    });
+  } else {
+    next();
+  }
+}
+
 ///--------------------------------------------
 
 module.exports = {
@@ -183,6 +225,7 @@ module.exports = {
   read: [asyncErrorBoundary(reservationExists), read],
   create: [
     hasRequiredProperties,
+    validateBookedStatus,
     validatePeople,
     validateDate, 
     validateOpenResDate,
@@ -190,5 +233,5 @@ module.exports = {
     validateOpenResTime,
     asyncErrorBoundary(create)
   ],
-  update: [asyncErrorBoundary(reservationExists), update]
+  update: [asyncErrorBoundary(reservationExists), validateNewStatus, validateCurrentResStatus, update]
 };

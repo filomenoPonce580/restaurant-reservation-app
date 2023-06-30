@@ -19,14 +19,10 @@ function Reservation({data, deleteRes}){
 
     const reservation_id = data.reservation_id
 
-    return (
-        <tr>
-            <td>{data.first_name}</td>
-            <td>{data.last_name}</td>
-            <td>{data.people}</td>
-            <td>{newTime}</td>
-            <td>{data.mobile_number}</td>
-            <td>
+    function checkStatus(status){
+        if(status === 'booked'){
+            return (
+                <td>
                 <Link to={`/reservations/${reservation_id}/seat`}> 
                     <button 
                         name="seat"
@@ -34,15 +30,30 @@ function Reservation({data, deleteRes}){
                         Seat    
                     </button>                                            
                 </Link>
+            </td>
+            )
+        } else if (status === 'seated') {
+            return (
+                <td>
+                    <button name="delete"
+                        className="btn btn-danger dashBrdBtn cancel" 
+                        onClick={()=> deleteRes(data)}>	
+                        Dining 
+                    </button>
+                </td>
+            )
+        }
+    }
 
-            </td>
-            <td>
-                <button name="delete"
-                    className="btn btn-danger dashBrdBtn cancel" 
-                    onClick={()=> deleteRes(data)}>	
-                    &#10005; 
-                </button>
-            </td>
+    return (
+        <tr>
+            <td>{data.first_name}</td>
+            <td>{data.last_name}</td>
+            <td>{data.people}</td>
+            <td>{newTime}</td>
+            <td>{data.mobile_number}</td>
+            <td data-reservation-id-status={data.reservation_id}>{data.status}</td>
+            {checkStatus(data.status)}
         </tr>
    )
     

@@ -2,7 +2,6 @@ const service = require("./tables.service");
 const resService = require("../reservations/reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary.js");
 const hasProperties = require("../errors/hasProperties.js");
-const tablesService = require("./tables.service");
 const hasRequiredProperties = hasProperties("table_name", "capacity")
 
 async function list(req, res) {
@@ -52,8 +51,17 @@ async function destroy(req, res, next) {
 }
 
 async function freeTable(req, res, next) {
-    //access table info
+    //access table and res info
     const table = res.locals.table
+    const reservation = await resService.read(table.reservation_id)
+    //console.log(reservation)
+
+    //set reservation status to "finished"
+    const finishReservation = {
+        ...reservation,
+        status: "finished"
+    }
+    await resService.update(finishReservation)
 
     //create table object with updated reservation ID
     const updatedTable = {
@@ -65,7 +73,7 @@ async function freeTable(req, res, next) {
     await service.update(updatedTable)
 
     //read the updated table
-    const update = await service.read(res.locals.table.table_id)
+    const update = await service.read(table.table_id)
     const data = update
   
     //send res
@@ -139,6 +147,45 @@ async function validateResIdExists(req, res, next){
     }
 }
 
+//UserStory6 --
+
+//validation. if res.status === seated, send error
+function validateNotSeated(req, res, next){
+    const reservation = res.locals.reservation;
+    if(reservation.status === "seated"){
+        next({
+            status: 400,
+            message: "reservation is already seated"
+        });
+    };
+    next();
+}
+
+//updates the reservation status when table is sat
+async function updateResStatus(req, res, next) {
+    //access reservation data
+    let reservation = res.locals.reservation;
+
+    //create reservation object with updated status
+    const updatedReservation = {
+        ...reservation,
+        status: "seated"
+    }
+
+    //update the reservation in DataBase
+    await resService.update(updatedReservation)
+
+    //might not need code, delete after completing
+    //read the updated table
+    // const update = await resService.read(reservation.reservation_id)
+    // const data = update
+  
+    //move on
+    next();
+}
+
+
+
 function validateTableAvailableAndCapacity(req, res, next){
     const tableCapacity = res.locals.table.capacity;
     const partySize = res.locals.reservation.people;
@@ -180,6 +227,8 @@ module.exports = {
     update: [
         validateDataAndResId,
         asyncErrorBoundary(validateResIdExists),
+        validateNotSeated,
+        updateResStatus,
         validateTableExists,
         validateTableAvailableAndCapacity,
         asyncErrorBoundary(update)

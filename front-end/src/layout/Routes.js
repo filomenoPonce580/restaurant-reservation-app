@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter as Router, Link, useHistory} from "react-router-dom"
+import {BrowserRouter as Router} from "react-router-dom"
 
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";

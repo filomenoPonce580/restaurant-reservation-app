@@ -1,10 +1,9 @@
-import React, {useState} from "react";
+import React from "react";
 import { freeTable } from "../utils/api";
-import {BrowserRouter as Router, Route, useHistory} from "react-router-dom"
+import {BrowserRouter as Router, useHistory} from "react-router-dom"
 
-function Table({data, tables}){
+function Table({data}){
     const history = useHistory()
-    console.log(tables)
 
     function handleFinish(event){
         event.preventDefault();

@@ -28,7 +28,7 @@ function TableForm(){
         // console.log(isValidCapacity)
         // console.log(isValidTableName)
 
-        if(isValidCapacity){
+        if(isValidTableName && isValidCapacity){
             formData.capacity = Number(formData.capacity);
             console.log(formData)
             //aborts only in useEffects

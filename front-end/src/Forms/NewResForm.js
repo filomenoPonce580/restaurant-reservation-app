@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {BrowserRouter as Router, useHistory} from "react-router-dom"
+import {BrowserRouter, useHistory} from "react-router-dom"
 //import {BrowserRouter as Router, Route, Link, useHistory} from "react-router-dom"
 import { createReservation } from "../utils/api";
 import { formatAsDate } from "../utils/date-time";
