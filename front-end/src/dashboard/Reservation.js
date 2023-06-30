@@ -2,7 +2,7 @@ import React from "react";
 import {BrowserRouter as Router, Link} from "react-router-dom"
 
 
-function Reservation({data, deleteRes}){
+function Reservation({reservation, deleteRes}){
     function tConvert (time) {
         // Check correct time format and split into components
         time = time.slice(0,-3).toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
@@ -15,9 +15,9 @@ function Reservation({data, deleteRes}){
         return time.join('');                       // return adjusted time or original string
     }
 
-    let newTime = tConvert(data.reservation_time)
+    let newTime = tConvert(reservation.reservation_time)
 
-    const reservation_id = data.reservation_id
+    const reservation_id = reservation.reservation_id
 
     function checkStatus(status){
         if(status === 'booked'){
@@ -37,7 +37,7 @@ function Reservation({data, deleteRes}){
                 <td>
                     <button name="delete"
                         className="btn btn-danger dashBrdBtn cancel" 
-                        onClick={()=> deleteRes(data)}>	
+                        onClick={()=> deleteRes(reservation)}>	
                         Dining 
                     </button>
                 </td>
@@ -47,13 +47,13 @@ function Reservation({data, deleteRes}){
 
     return (
         <tr>
-            <td>{data.first_name}</td>
-            <td>{data.last_name}</td>
-            <td>{data.people}</td>
+            <td>{reservation.first_name}</td>
+            <td>{reservation.last_name}</td>
+            <td>{reservation.people}</td>
             <td>{newTime}</td>
-            <td>{data.mobile_number}</td>
-            <td data-reservation-id-status={data.reservation_id}>{data.status}</td>
-            {checkStatus(data.status)}
+            <td>{reservation.mobile_number}</td>
+            <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
+            {checkStatus(reservation.status)}
         </tr>
    )
     

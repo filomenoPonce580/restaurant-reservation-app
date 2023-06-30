@@ -73,7 +73,7 @@ function Dashboard({ date }) {
             </tr>
           </thead>
           <tbody>
-              {reservations.map((oneRes, indx) => <Reservation key={indx} data={oneRes} deleteRes={deleteRes}/>)}
+              {reservations.map((oneRes, indx) => <Reservation key={indx} reservation={oneRes} deleteRes={deleteRes}/>)}
           </tbody>
         </table>
       </div>
