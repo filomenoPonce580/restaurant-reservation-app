@@ -2,6 +2,7 @@ const service = require("./tables.service");
 const resService = require("../reservations/reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary.js");
 const hasProperties = require("../errors/hasProperties.js");
+const tablesService = require("./tables.service");
 const hasRequiredProperties = hasProperties("table_name", "capacity")
 
 async function list(req, res) {
@@ -44,6 +45,33 @@ async function update(req, res, next) {
     res.json({ data });
 }
 
+async function destroy(req, res, next) {
+    const { tableId } = req.params
+    const data = await service.delete(tableId);
+    res.status(200).json({data});
+}
+
+async function freeTable(req, res, next) {
+    //access table info
+    const table = res.locals.table
+
+    //create table object with updated reservation ID
+    const updatedTable = {
+        ...table,
+        reservation_id: null
+    }
+
+    //update the table in DataBase
+    await service.update(updatedTable)
+
+    //read the updated table
+    const update = await service.read(res.locals.table.table_id)
+    const data = update
+  
+    //send res
+    res.status(200).json({ data });
+}
+
 
 //---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
 function validateCapacity(req,res,next){
@@ -76,11 +104,10 @@ async function validateTableExists(req, res, next){
         res.locals.table = table;
         return next()
     }
-    next({status: 404, message: "Table not found"})
+    next({status: 404, message: `Table id${tableId} not found`})
 }
 
 function validateDataAndResId(req, res, next){
-    console.log(req.body.data)
     if(!req.body.data){
         next({
             status: 400,
@@ -130,6 +157,17 @@ function validateTableAvailableAndCapacity(req, res, next){
     next();
 }
 
+function validateUnoccupied(req, res, next){
+    const table = res.locals.table
+    if(!table.reservation_id){
+        next({
+            status: 400,
+            message: `not occupied`
+        })
+    } else {
+        next()
+    }
+}
 
 module.exports = {
     list,
@@ -145,5 +183,6 @@ module.exports = {
         validateTableExists,
         validateTableAvailableAndCapacity,
         asyncErrorBoundary(update)
-    ]
+    ],
+    freeTable: [asyncErrorBoundary(validateTableExists), validateUnoccupied, freeTable]
 };

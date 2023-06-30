@@ -8,7 +8,6 @@ const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_n
  */
 async function read(req, res, next){
   res.json({data: res.locals.reservation})
-
 }
 
 async function list(req, res) {
@@ -30,6 +29,26 @@ async function create(req, res, next) {
   res.status(201).json({ data: createdReservation })
 }
 
+async function update(req, res, next) {
+  const requestInfo = req.body.data.status
+  console.log(requestInfo)
+
+  const reservation = res.locals.reservation
+
+  const newReservation = {
+    ...reservation,
+    status: requestInfo 
+  }
+
+  console.log(newReservation)
+
+  await service.update(newReservation)
+
+  const update = await service.read(reservation.reservation_id)
+  const data = update
+
+  res.status(200).json({ data })
+}
 
 //---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
 
@@ -170,5 +189,6 @@ module.exports = {
     validateTime,
     validateOpenResTime,
     asyncErrorBoundary(create)
-  ]
+  ],
+  update: [asyncErrorBoundary(reservationExists), update]
 };

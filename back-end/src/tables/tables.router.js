@@ -19,6 +19,7 @@ router.route("/new")
 
 router.route("/:tableId/seat")
     .put(controller.update)
+    .delete(controller.freeTable)
     .all(methodNotAllowed)
      
 module.exports = router;

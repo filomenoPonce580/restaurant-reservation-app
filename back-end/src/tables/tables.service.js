@@ -27,9 +27,14 @@ function update(updatedTable){
         .update(updatedTable, "*");
 };
 
+function destroy(tableId) {
+    return knex("tables").where({table_id: tableId}).del();
+}
+
 module.exports = {
     list,
     create,
     read,
-    update
+    update,
+    delete: destroy
 };

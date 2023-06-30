@@ -3,7 +3,8 @@ import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "./Reservation";
 import Table from "./Table";
-import {BrowserRouter as Router, Route, Link, Switch, useHistory, useLocation, useRouteMatch, useParams} from "react-router-dom"
+//import {BrowserRouter as Router, Route, Link, Switch, useHistory, useLocation, useRouteMatch, useParams} from "react-router-dom"
+import {BrowserRouter as Router, Route, Link} from "react-router-dom"
 import { previous, next, today } from "../utils/date-time";
 
 
@@ -32,6 +33,11 @@ function Dashboard({ date }) {
       .catch(setTablesError)
     return () => abortController.abort();
   }
+
+  // const fakeTables = [
+  //   {table_id: 1, table_name: "#1", capacity: 5, reservation_id: 12},
+  //   {table_id: 2, table_name: "#2", capacity: 4, reservation_id: null}
+  // ]
 
   function deleteRes(resToDelete){
     let filteredRes = reservations.filter(res => res !== resToDelete);
@@ -88,6 +94,7 @@ function Dashboard({ date }) {
               <th>Table Name</th>
               <th>Capacity</th>
               <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>

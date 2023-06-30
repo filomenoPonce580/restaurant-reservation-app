@@ -20,5 +20,10 @@ router.route("/new")
 router.route("/:reservationId")
     .get(controller.read)
     .all(methodNotAllowed)
+
+router.route("/:reservationId/status")
+    .put(controller.update)
+    .all(methodNotAllowed)
+
     
 module.exports = router;

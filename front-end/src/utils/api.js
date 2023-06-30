@@ -150,3 +150,19 @@ export async function listReservations(params, signal) {
   };
   return await fetchJson(url, options, {});
 }
+
+
+/**
+ * Deletes the table with the specified `tableId`.
+ * @param tableId
+ *  the id of the deck to delete
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<Error|*>}
+ *  a promise that resolves to an empty object.
+ */
+ export async function freeTable(tableId, signal) {
+  const url = `${API_BASE_URL}/tables/${tableId}/seat`;
+  const options = { method: "DELETE", signal };
+  return await fetchJson(url, options);
+}
