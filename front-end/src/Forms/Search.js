@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-//import {BrowserRouter} from "react-router-dom"
+
 import { listReservations } from "../utils/api";
 import Reservation from "../dashboard/Reservation";
 
@@ -18,7 +18,9 @@ function Search({mobile_number}){
         return () => abortController.abort();
     }
 
-    if (reservationsError)console.log(reservationsError)
+    if (reservationsError){
+        console.log(console.log(reservationsError))
+    }
 
     function loadReservations(){
         return (
