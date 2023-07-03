@@ -36,6 +36,18 @@ td{
   width: 16.6%;
 }
 
+.sizeColumn{
+  width: 10%;
+}
+
+.phoneNumberColumn{
+  width: 20%;
+}
+
+.actionButtonCol{
+  width: 23.2%;
+}
+
 th {
   letter-spacing: 2px;
   padding: 10px;
@@ -71,4 +83,8 @@ tr:nth-child(even){
 
 .dashBrdBtn{
   width: 100px;
+}
+
+.actionBtn{
+  margin: 2px;
 }

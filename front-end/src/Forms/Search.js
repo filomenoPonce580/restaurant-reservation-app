@@ -33,15 +33,15 @@ function Search({mobile_number}){
                         <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>Party Size</th>
+                        <th className="sizeColumn">Party Size</th>
                         <th>Time</th>
-                        <th>Phone</th>
+                        <th className="phoneNumberColumn">Phone</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th className="actionButtonCol">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {reservations.map((oneRes, indx) => <Reservation key={indx} reservation={oneRes} deleteRes={deleteRes}/>)}
+                        {reservations.map((oneRes, indx) => <Reservation key={indx} reservation={oneRes}/>)}
                     </tbody>
                     </table>
                 </div>
@@ -65,10 +65,10 @@ function Search({mobile_number}){
     }
 
     //no function right now(not connected to server)
-    function deleteRes(resToDelete){
-        let filteredRes = reservations.filter(res => res !== resToDelete);
-        setReservations(filteredRes)
-    }
+    // function deleteRes(resToDelete){
+    //     let filteredRes = reservations.filter(res => res !== resToDelete);
+    //     setReservations(filteredRes)
+    // }
     return (
         <div>
             <h1 className="title mb-3">Search</h1> 

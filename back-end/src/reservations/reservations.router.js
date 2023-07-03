@@ -19,10 +19,11 @@ router.route("/new")
 
 router.route("/:reservationId")
     .get(controller.read)
+    .put(controller.updateReservation)
     .all(methodNotAllowed)
 
 router.route("/:reservationId/status")
-    .put(controller.update)
+    .put(controller.updateStatus)
     .all(methodNotAllowed)
 
     

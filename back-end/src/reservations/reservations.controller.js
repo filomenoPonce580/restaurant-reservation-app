@@ -48,12 +48,12 @@ async function create(req, res, next) {
 }
 
 async function update(req, res, next) {
-  const requestInfo = req.body.data.status
+  const updatedInfo = req.body.data
 
   const reservation = res.locals.reservation
   const newReservation = {
     ...reservation,
-    status: requestInfo 
+    ...updatedInfo 
   }
 
   await service.update(newReservation)
@@ -209,7 +209,7 @@ function validateOpenResTime(req, res, next) {
 //--validations for updating status
 function validateNewStatus(req, res, next){
   const status = req.body.data.status
-  if (status === "booked" || status === "seated" || status === "finished"){
+  if (status === "booked" || status === "seated" || status === "finished" || status === 'cancelled'){
     next()
   } else {
     next({
@@ -246,5 +246,21 @@ module.exports = {
     validateOpenResTime,
     asyncErrorBoundary(create)
   ],
-  update: [asyncErrorBoundary(reservationExists), validateNewStatus, validateCurrentResStatus, update]
+  updateStatus: [
+    asyncErrorBoundary(reservationExists),
+    validateNewStatus,
+    validateCurrentResStatus,
+    update
+  ],
+  updateReservation: [
+    asyncErrorBoundary(reservationExists),
+    hasRequiredProperties,
+    validateBookedStatus,
+    validatePeople,
+    validateDate, 
+    validateOpenResDate,
+    validateTime,
+    validateOpenResTime,
+    update
+  ]
 };

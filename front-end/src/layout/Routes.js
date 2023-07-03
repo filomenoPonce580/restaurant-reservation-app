@@ -8,6 +8,7 @@ import { today } from "../utils/date-time";
 import NewResForm from "../Forms/NewResForm";
 import TableForm from "../Forms/TableForm";
 import SeatRes from "../Forms/SeatRes";
+import EditRes from "../Forms/EditRes";
 import Search from "../Forms/Search";
 import useQuery from "../utils/useQuery";
 
@@ -49,6 +50,10 @@ function Routes() {
 
       <Route path="/reservations/:reservationId/seat">
         <SeatRes />
+      </Route>
+
+      <Route path="/reservations/:reservationId/edit">
+        <EditRes />
       </Route>
 
       <Route path="/search">

@@ -64,10 +64,28 @@ export async function listReservations(params, signal) {
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  // console.log(url)
+
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+/**
+ * Retrieves reservation.
+ * @returns {Promise<[reservation]>}
+ *  a promise that resolves to a possibly empty array of reservation saved in the database.
+ */
+
+ export async function readReservation(resId, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${resId}`);
+
+  // Object.entries(params).forEach(([key, value]) =>
+  //   url.searchParams.append(key, value.toString())
+  // );
+
+  return await fetchJson(url, { headers, signal }, [])
+    // .then(formatReservationDate)
+    // .then(formatReservationTime);
 }
 
 
@@ -91,6 +109,46 @@ export async function listReservations(params, signal) {
     signal,
   };
 
+  return await fetchJson(url, options, {});
+}
+
+/**
+ * Updates an existing Reservation
+ * @param updatedRes
+ *  the table to save, which must have an `id` property.
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<Error|*>}
+ *  a promise that resolves to the updated table.
+ */
+export async function updateReservation(updatedRes, signal) {
+  const url = `${API_BASE_URL}/reservations/${updatedRes.reservation_id}`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({data: updatedRes}),
+    signal,
+  };
+  return await fetchJson(url, options, {});
+}
+
+/**
+ * Updates an existing table status to "cancelled"
+ * @param reservation_id
+ *  the table to save, which must have an `id` property.
+ * @param signal
+ *  optional AbortController.signal
+ * @returns {Promise<Error|*>}
+ *  a promise that resolves to the updated table.
+ */
+ export async function cancelReservation(reservation_id, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({data: {status: "cancelled"}}),
+    signal,
+  };
   return await fetchJson(url, options, {});
 }
 

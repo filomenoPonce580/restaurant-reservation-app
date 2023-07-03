@@ -6,7 +6,7 @@ Middleware function that validates that req.body.data has the specified non fals
 function hasProperties(...properties) {
     return function (res, req, next) {
       const { data = {} } = res.body;
-  
+      
       try {
         properties.forEach((property) => {
           const value = data[property];

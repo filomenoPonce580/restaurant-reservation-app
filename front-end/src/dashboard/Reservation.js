@@ -1,23 +1,26 @@
 import React from "react";
-import {BrowserRouter as Router, Link} from "react-router-dom"
+import {BrowserRouter as Router, Link, useHistory} from "react-router-dom"
+import { cancelReservation } from "../utils/api";
+import { tConvert } from "../utils/tConvert";
 
 
-function Reservation({reservation, deleteRes}){
-    function tConvert (time) {
-        // Check correct time format and split into components
-        time = time.slice(0,-3).toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-      
-        if (time.length > 1) {                      // If time format correct
-          time = time.slice (1);                    // Remove full string match value
-          time[5] = +time[0] < 12 ? 'AM' : 'PM';    // Set AM/PM
-          time[0] = +time[0] % 12 || 12;            // Adjust hours
-        }
-        return time.join('');                       // return adjusted time or original string
-    }
+function Reservation({reservation}){
+    const history = useHistory()
 
     let newTime = tConvert(reservation.reservation_time)
 
     const reservation_id = reservation.reservation_id
+
+    function handleCancel(event){
+        event.preventDefault();
+        let result = window.confirm("Do you want to cancel this reservation? This cannot be undone.")
+        if(result){
+            //if OK is clicked, we cancel table, sends PUT request to change status to "cancelled"
+            console.log("cancel")
+            cancelReservation(reservation_id)
+                .then(history.go(0))
+        }
+    }
 
     function checkStatus(status){
         if(status === 'booked'){
@@ -26,10 +29,24 @@ function Reservation({reservation, deleteRes}){
                 <Link to={`/reservations/${reservation_id}/seat`}> 
                     <button 
                         name="seat"
-                        className="btn btn-primary dashBrdBtn">
+                        className="btn btn-primary dashBrdBtn actionBtn">
                         Seat    
                     </button>                                            
                 </Link>
+                <Link to={`/reservations/${reservation_id}/edit`}> 
+                    <button
+                        name="edit"
+                        className="btn btn-secondary dashBrdBtn actionBtn">
+                        Edit    
+                    </button>                                            
+                </Link> 
+                    <button
+                        data-reservation-id-cancel={reservation.reservation_id}
+                        name="cancel"
+                        className="btn btn-danger dashBrdBtn actionBtn"
+                        onClick={handleCancel}>
+                        Cancel    
+                    </button>
             </td>
             )
         } else if (status === 'seated') {
@@ -37,10 +54,14 @@ function Reservation({reservation, deleteRes}){
                 <td>
                     <button name="delete"
                         className="btn btn-danger dashBrdBtn cancel" 
-                        onClick={()=> deleteRes(reservation)}>	
+                        >	
                         Dining 
                     </button>
                 </td>
+            )
+        } else {
+            return (
+                <td></td>
             )
         }
     }
@@ -49,10 +70,10 @@ function Reservation({reservation, deleteRes}){
         <tr>
             <td>{reservation.first_name}</td>
             <td>{reservation.last_name}</td>
-            <td>{reservation.people}</td>
+            <td className="sizeColumn">{reservation.people}</td>
             <td>{newTime}</td>
-            <td>{reservation.mobile_number}</td>
-            <td data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
+            <td className="phoneNumberColumn">{reservation.mobile_number}</td>
+            <td className="actionButtonCol" data-reservation-id-status={reservation.reservation_id}>{reservation.status}</td>
             {checkStatus(reservation.status)}
         </tr>
    )

@@ -1,10 +1,10 @@
-import React, {useState} from "react";
-import {BrowserRouter, useHistory} from "react-router-dom"
-//import {BrowserRouter as Router, Route, Link, useHistory} from "react-router-dom"
-import { createReservation } from "../utils/api";
-import { formatAsDate } from "../utils/date-time";
+import React, {useState, useEffect} from "react";
+import {BrowserRouter, useHistory, useParams} from "react-router-dom";
+import { updateReservation, readReservation } from "../utils/api";
+import { formatAsDate, formatAsTime, today } from "../utils/date-time";
 
-function NewResForm(){
+function EditRes(){
+    const { reservationId } = useParams()
     const history = useHistory()
 
     let initialFormData ={
@@ -15,9 +15,22 @@ function NewResForm(){
         reservation_date: '',
         reservation_time: ''
     }
+    const [reservation, setReservation] = useState([])
     const [formData, setFormData] = useState(initialFormData)
     const [errorMessage, setErrorMessage] = useState("");
-  
+
+    function loadRes() {
+      const abortController = new AbortController();
+      readReservation(reservationId, abortController.signal)
+        .then(setReservation)
+        .catch(err=>{
+            throw err
+        })
+      return () => abortController.abort();
+    }
+
+    useEffect(loadRes, []);
+
     function handleInputChange(event){
         event.preventDefault();
         setFormData({
@@ -29,18 +42,50 @@ function NewResForm(){
     function handleSubmit(event){
         event.preventDefault()
 
-        //convert party size into number for backend
-        formData.people = Number(formData.people)
+        // //convert party size into number for backend
+        // // formData.people = Number(formData.people)
 
-        //validate date&time.... Date validator calls time validator
-        validateDay(formData.reservation_date)
+        // //validate date&time.... Date validator calls time validator
+        // validateDay(formData.reservation_date)
 
-        const abortController = new AbortController()
-        createReservation(formData, abortController.signal)
-            .then((savedRes) => {
-                history.push(`/dashboard?date=${formatAsDate(savedRes.reservation_date)}`)
+        // console.log("form data: ", formData)
+        // console.log("old res", reservation)
+
+        // const updatedReservationObj = {
+        //     ...reservation,
+        //     ...formData,
+        //     // reservation_id: Number(reservationId),
+        //     // status: "booked"
+        // }
+
+        const nonEmptyFormData = Object.entries(formData).reduce((acc, [key, value]) => {
+            if (value !== '') {
+              acc[key] = value;
+            }
+            return acc;
+          }, {});
+        
+          const updatedReservationObj = {
+            ...reservation,
+            ...nonEmptyFormData
+        };
+
+        //reformat People, res date, and res times for backend
+        updatedReservationObj.reservation_date = formatAsDate(updatedReservationObj.reservation_date)
+        updatedReservationObj.reservation_time = formatAsTime(updatedReservationObj.reservation_time)
+        if(typeof updatedReservationObj.people === "string"){
+            updatedReservationObj.people = Number(updatedReservationObj.people)
+        }
+
+        validateDay(updatedReservationObj.reservation_date)
+
+        console.log("after update:", updatedReservationObj)
+
+        updateReservation(updatedReservationObj)
+            .then((updatedRes)=>{
+                console.log(updatedRes)
+                history.push(`/dashboard?date=${updatedReservationObj.reservation_date}`)
             })
-        return () => abortController.abort()
     }
 
     function validateDay(dateString){
@@ -84,7 +129,7 @@ function NewResForm(){
 
     return(
         <React.Fragment>
-            <h1>Create New Reservation</h1>
+            <h1>Edit Reservation</h1>
 
             <form>
                 {/* Form Input Fields */}
@@ -97,7 +142,7 @@ function NewResForm(){
                             className="form-control"
                             name="first_name"
                             id="first_name" 
-                            placeholder="First Name"
+                            placeholder={reservation.first_name}
                             value={formData.first_name} 
                             onChange={handleInputChange}/>
                     </div>
@@ -108,7 +153,7 @@ function NewResForm(){
                             className="form-control"
                             name="last_name"
                             id="last_name"
-                            placeholder="Last Name"
+                            placeholder={reservation.last_name}
                             value={formData.last_name} onChange={handleInputChange}/>
                     </div>
                     <div className="form-group col-md-4">
@@ -118,7 +163,7 @@ function NewResForm(){
                             className="form-control" 
                             name="mobile_number"
                             id="mobile_number" 
-                            placeholder="555-555-5555"
+                            placeholder={reservation.mobile_number}
                             value={formData.mobile_number}
                             onChange={handleInputChange}/>
                     </div>
@@ -133,7 +178,7 @@ function NewResForm(){
                             className="form-control"
                             name="people"
                             id="people"
-                            placeholder="2"
+                            placeholder={reservation.people}
                             value={formData.people}
                             onChange={handleInputChange}/>
                     </div>
@@ -144,7 +189,7 @@ function NewResForm(){
                             className="form-control"
                             name="reservation_date"
                             id="reservation_date"
-                            onFocus="(this.type = 'date')"
+                            // onFocus="(this.type = 'date')"
                             value={formData.reservation_date}
                             onChange={handleInputChange}/>
                     </div>
@@ -155,7 +200,7 @@ function NewResForm(){
                             className="form-control"
                             name="reservation_time"
                             id="reservation_time"
-                            min="11:00"
+                            min="09:00"
                             max="22:00"
                             
                             onChange={handleInputChange}/>
@@ -188,7 +233,6 @@ function NewResForm(){
             </form>        
         </React.Fragment>
     )
-
 }
 
-export default NewResForm;
+export default EditRes
