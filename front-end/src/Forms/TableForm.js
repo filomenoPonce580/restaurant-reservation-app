@@ -25,8 +25,6 @@ function TableForm(){
 
         const isValidTableName = validateTableName(formData.table_name)
         const isValidCapacity = validateCapacity(formData.capacity)
-        // console.log(isValidCapacity)
-        // console.log(isValidTableName)
 
         if(isValidTableName && isValidCapacity){
             formData.capacity = Number(formData.capacity);

@@ -7,13 +7,6 @@ function SeatRes(){
     const { reservationId } = useParams()
     const history = useHistory()
 
-    //placehoder tableData
-    // const tableData = [
-    //     {"id": 1, table_name: "#1", capacity: 4, status: "Occupied"},
-    //     {"id": 2, table_name: "#2", capacity: 8, status: "Free"},
-    //     {"id": 3, table_name: "Bar#1", capacity: 2, status: "Free"},
-    //     {"id": 4, table_name: "Bar#2", capacity: 3, status: "occupied"}
-    // ]
     const [tables, setTables] = useState([]);
     const [selectedTableId, setSelectedTableId] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
@@ -24,6 +17,7 @@ function SeatRes(){
         listTables(abortController.signal)
             .then(setTables)
             .catch(setErrorMessage)
+        return () => abortController.abort();
     }
 
     useEffect(loadPage, []);

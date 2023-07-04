@@ -24,8 +24,7 @@ async function read(req, res, next){
 }
 
 async function update(req, res, next) {
-    //access incoming resID
-    let reservationId = req.body.data.reservation_id;   //returns number
+    let reservationId = req.body.data.reservation_id;       //returns number
 
     //create table object with updated reservation ID
     const updatedTable = {
@@ -33,14 +32,11 @@ async function update(req, res, next) {
         reservation_id: reservationId
     }
 
-    //update the table in DataBase
     await service.update(updatedTable)
 
-    //read the updated table
     const update = await service.read(res.locals.table.table_id)
     const data = update
   
-    //send res
     res.json({ data });
 }
 
@@ -51,32 +47,25 @@ async function destroy(req, res, next) {
 }
 
 async function freeTable(req, res, next) {
-    //access table and res info
     const table = res.locals.table
     const reservation = await resService.read(table.reservation_id)
-    //console.log(reservation)
 
-    //set reservation status to "finished"
     const finishReservation = {
         ...reservation,
         status: "finished"
     }
     await resService.update(finishReservation)
 
-    //create table object with updated reservation ID
     const updatedTable = {
         ...table,
         reservation_id: null
     }
 
-    //update the table in DataBase
     await service.update(updatedTable)
 
-    //read the updated table
     const update = await service.read(table.table_id)
     const data = update
   
-    //send res
     res.status(200).json({ data });
 }
 
@@ -161,26 +150,17 @@ function validateNotSeated(req, res, next){
     next();
 }
 
-//updates the reservation status when table is sat
+//updates the reservation status when table has been seated
 async function updateResStatus(req, res, next) {
-    //access reservation data
     let reservation = res.locals.reservation;
 
-    //create reservation object with updated status
     const updatedReservation = {
         ...reservation,
         status: "seated"
     }
 
-    //update the reservation in DataBase
     await resService.update(updatedReservation)
 
-    //might not need code, delete after completing
-    //read the updated table
-    // const update = await resService.read(reservation.reservation_id)
-    // const data = update
-  
-    //move on
     next();
 }
 
@@ -233,5 +213,8 @@ module.exports = {
         validateTableAvailableAndCapacity,
         asyncErrorBoundary(update)
     ],
-    freeTable: [asyncErrorBoundary(validateTableExists), validateUnoccupied, freeTable]
+    freeTable: [
+        asyncErrorBoundary(validateTableExists),
+        validateUnoccupied,
+        freeTable]
 };

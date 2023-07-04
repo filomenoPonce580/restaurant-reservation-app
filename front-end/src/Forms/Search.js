@@ -57,18 +57,10 @@ function Search({mobile_number}){
         )
     }
 
-    console.log(reservations)
-
-
     function handleSubmit(){
         console.log('success')
     }
 
-    //no function right now(not connected to server)
-    // function deleteRes(resToDelete){
-    //     let filteredRes = reservations.filter(res => res !== resToDelete);
-    //     setReservations(filteredRes)
-    // }
     return (
         <div>
             <h1 className="title mb-3">Search</h1> 

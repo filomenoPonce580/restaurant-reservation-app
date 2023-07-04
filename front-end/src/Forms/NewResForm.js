@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {BrowserRouter, useHistory} from "react-router-dom"
-//import {BrowserRouter as Router, Route, Link, useHistory} from "react-router-dom"
 import { createReservation } from "../utils/api";
 import { formatAsDate } from "../utils/date-time";
 
@@ -144,7 +143,6 @@ function NewResForm(){
                             className="form-control"
                             name="reservation_date"
                             id="reservation_date"
-                            onFocus="(this.type = 'date')"
                             value={formData.reservation_date}
                             onChange={handleInputChange}/>
                     </div>

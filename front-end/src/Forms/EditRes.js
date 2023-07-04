@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {BrowserRouter, useHistory, useParams} from "react-router-dom";
 import { updateReservation, readReservation } from "../utils/api";
-import { formatAsDate, formatAsTime, today } from "../utils/date-time";
+import { formatAsTime } from "../utils/date-time";
 
 function EditRes(){
     const { reservationId } = useParams()
@@ -42,22 +42,6 @@ function EditRes(){
     function handleSubmit(event){
         event.preventDefault()
 
-        // //convert party size into number for backend
-        // // formData.people = Number(formData.people)
-
-        // //validate date&time.... Date validator calls time validator
-        // validateDay(formData.reservation_date)
-
-        // console.log("form data: ", formData)
-        // console.log("old res", reservation)
-
-        // const updatedReservationObj = {
-        //     ...reservation,
-        //     ...formData,
-        //     // reservation_id: Number(reservationId),
-        //     // status: "booked"
-        // }
-
         const nonEmptyFormData = Object.entries(formData).reduce((acc, [key, value]) => {
             if (value !== '') {
               acc[key] = value;
@@ -70,16 +54,13 @@ function EditRes(){
             ...nonEmptyFormData
         };
 
-        //reformat People, res date, and res times for backend
-        updatedReservationObj.reservation_date = formatAsDate(updatedReservationObj.reservation_date)
+        //reformat People, and res times for backend
         updatedReservationObj.reservation_time = formatAsTime(updatedReservationObj.reservation_time)
         if(typeof updatedReservationObj.people === "string"){
             updatedReservationObj.people = Number(updatedReservationObj.people)
         }
 
-        validateDay(updatedReservationObj.reservation_date)
-
-        console.log("after update:", updatedReservationObj)
+        validateDateTime(updatedReservationObj.reservation_date, formData.reservation_time)
 
         updateReservation(updatedReservationObj)
             .then((updatedRes)=>{
@@ -88,7 +69,7 @@ function EditRes(){
             })
     }
 
-    function validateDay(dateString){
+    function validateDateTime(dateString, timeString){
         //no reservations on tuesday
         const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
         if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
@@ -100,7 +81,7 @@ function EditRes(){
             if(date < today){
                 setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
             }else{
-                validateTime(formData.reservation_time)
+                validateTime(timeString)
             }
         }
 
@@ -189,7 +170,6 @@ function EditRes(){
                             className="form-control"
                             name="reservation_date"
                             id="reservation_date"
-                            // onFocus="(this.type = 'date')"
                             value={formData.reservation_date}
                             onChange={handleInputChange}/>
                     </div>

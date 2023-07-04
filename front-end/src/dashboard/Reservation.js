@@ -16,7 +16,6 @@ function Reservation({reservation}){
         let result = window.confirm("Do you want to cancel this reservation? This cannot be undone.")
         if(result){
             //if OK is clicked, we cancel table, sends PUT request to change status to "cancelled"
-            console.log("cancel")
             cancelReservation(reservation_id)
                 .then(history.go(0))
         }

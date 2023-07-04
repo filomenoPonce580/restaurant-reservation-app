@@ -27,9 +27,6 @@ async function list(req, res) {
     const number = req.query.mobile_number
     const data = await service.search(number)
 
-    console.log(number)
-    console.log(data)
-
     res.json({data})
   }
 }
@@ -95,7 +92,6 @@ function validateBookedStatus(req, res, next){
 }
 
 function validatePeople(req,res,next){
-  //checks for input data
   //var isNumber = /^\d+$/
   if(!req.body.data.people || typeof req.body.data.people !== "number" ){
       next({
@@ -162,7 +158,6 @@ function validateOpenResTime(req, res, next) {
   const [hours, minutes] = reservationTime.split(":");
   const reservationDateTime = new Date();
   reservationDateTime.setUTCHours(hours, minutes, 0, 0);
-  const currentTime = new Date();
 
   const openingTime = new Date();
   openingTime.setUTCHours(10, 30, 0, 0); // Sets the opening time to 10:30 AM UTC
@@ -175,32 +170,6 @@ function validateOpenResTime(req, res, next) {
       status: 400,
       message: "Please select a reservation time between 10:30 AM and 9:30 PM.",
     });
-  }
-
-
-  //As stated within function, might not need this block of code
-  if(reservationDateTime < currentTime){
-    //reso in valid times, check for future date
-    const reservationDate = new Date(req.body.data.reservation_date);
-    const rightNow = new Date();
-
-    let logs = {
-      "res" : reservationDateTime,
-      "open": openingTime,
-      "close": closingTime,
-    }
-
-    /*
-    //not needed anymore, will hold on to this piece of code until finished
-    // if(reservationDate < rightNow){
-    //   return next({
-    //     status: 400,
-    //     message: `resDate: ${reservationDate}`,
-    //     message: Please select a reservation time after the current time. 
-    //   });      
-    // }
-
-    */
   }
 
   next();

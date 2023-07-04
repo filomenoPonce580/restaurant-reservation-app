@@ -79,13 +79,8 @@ export async function listReservations(params, signal) {
  export async function readReservation(resId, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/${resId}`);
 
-  // Object.entries(params).forEach(([key, value]) =>
-  //   url.searchParams.append(key, value.toString())
-  // );
-
   return await fetchJson(url, { headers, signal }, [])
-    // .then(formatReservationDate)
-    // .then(formatReservationTime);
+    .then(formatReservationDate)
 }
 
 

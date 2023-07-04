@@ -16,7 +16,6 @@ function Table({data}){
         }
     }
 
-
     return (
         <tr>
             <td>{data.table_name}</td>
@@ -26,8 +25,14 @@ function Table({data}){
             </td>
             <td>
                 {!data.reservation_id 
-                    ? "Seat Me!"
-                    : <button data-table-id-finish={data.table_id} onClick={handleFinish}>Finish</button>
+                    ?   "Seat Me!"
+                    :   <button
+                            className="btn btn-danger dashBrdBtn actionBtn"
+                            data-table-id-finish={data.table_id}
+                            onClick={handleFinish}
+                            >
+                            Finish
+                        </button>
                 } 
             </td>
         </tr>

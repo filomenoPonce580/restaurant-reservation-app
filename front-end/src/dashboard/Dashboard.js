@@ -39,32 +39,38 @@ function Dashboard({ date }) {
     setReservations(filteredRes)
   }
 
+  //displays date in 'Month DD, YYYY' format on dashboard
+  const months   = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const arrDate = date.split("-")
+  if(arrDate[1][0]=="0"){
+    arrDate[1]=arrDate[1][1]
+  }
+  const dateInWords = months[arrDate[1]] + ' ' + arrDate[2] + ', ' + arrDate[0]
+
+
   return (
     <main>
       <h1 className="title">Dashboard</h1>
       <div className=" mb-3 title">
-        <h4 className="mb-0">Reservations for date {date}</h4>
+        <h4 className="mb-0">Reservations for {dateInWords}</h4>
 
-
-              <form>
-                <div className="form-group">
-                    <Link to={`/dashboard?date=${previous(date)}`}><button className="btn btn-secondary m-1"> Previous </button></Link>
-                    <Link to={`/dashboard?date=${today()}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
-                    <Link to={`/dashboard?date=${next(date)}`}><button className="btn btn-secondary m-1 dashBrdBtn">Next</button></Link>                   
-                </div>
-              </form>  
-
-
+          <form>
+            <div className="form-group">
+                <Link to={`/dashboard?date=${previous(date)}`}><button className="btn btn-secondary m-1"> Previous </button></Link>
+                 <Link to={`/dashboard?date=${today()}`}><button className="btn btn-secondary m-1 dashBrdBtn">Today</button></Link>
+                <Link to={`/dashboard?date=${next(date)}`}><button className="btn btn-secondary m-1 dashBrdBtn">Next</button></Link>                   
+            </div>
+          </form>  
         
       </div>
       <ErrorAlert error={reservationsError} />
-      <div className="">
-        <table>
+      <div className="table-responsive table-responsive-sm table-responsive-md">
+        <table className="table-sm">
           <thead className="tableHead">
             <tr>
               <th>First Name</th>
               <th>Last Name</th>
-              <th className="sizeColumn">Party Size</th>
+              <th className="sizeColumn">Size</th>
               <th>Time</th>
               <th className="phoneNumberColumn">Phone</th>
               <th>Status</th>
@@ -79,8 +85,8 @@ function Dashboard({ date }) {
 
       <h1 className="title">Tables</h1>
       <ErrorAlert error={tablesError} />
-      <div className="">
-        <table>
+      <div className="table-responsive table-responsive-sm table-responsive-md">
+        <table className="table-sm">
           <thead className="tableHead">
             <tr>
               <th>Table Name</th>
