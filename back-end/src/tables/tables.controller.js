@@ -124,6 +124,7 @@ async function validateResIdExists(req, res, next){
     //points to reservations/reservations.service and uses function there to check for resId
     const resId = req.body.data.reservation_id
     const reservation = await resService.read(resId)
+    console.log(resId)
 
     if(!reservation){
         next({

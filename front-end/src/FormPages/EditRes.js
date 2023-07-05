@@ -18,7 +18,6 @@ function EditRes(){
     }
     const [reservation, setReservation] = useState([])
     const [formData, setFormData] = useState(initialFormData)
-    const [errorMessage, setErrorMessage] = useState(null);
     const [errorArray, setErrorArray] = useState([])
     let errors = []
 
@@ -71,7 +70,6 @@ function EditRes(){
         const abortController = new AbortController();
         updateReservation(updatedReservationObj, abortController.signal)
             .then((updatedRes)=>{
-                console.log(updatedRes)
                 history.push(`/dashboard?date=${updatedReservationObj.reservation_date}`)
             })
         return () => abortController.abort();

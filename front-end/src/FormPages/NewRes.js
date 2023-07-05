@@ -34,19 +34,23 @@ function NewResForm(){
         //convert party size into number for backend
         formData.people = Number(formData.people)
 
-        //validations.... Day validator calls time validator
+        //validations
         validateDay(formData.reservation_date)
+        //validateTime(formData.reservation_time, formData.reservation_date)
         validateMobileNumber(formData.mobile_number)
         checkName(formData.first_name, formData.last_name)
         checkSize(formData.people)
         setErrorArray(errors)
 
-        const abortController = new AbortController()
-        createReservation(formData, abortController.signal)
-            .then((savedRes) => {
-                history.push(`/dashboard?date=${formatAsDate(savedRes.reservation_date)}`)
-            })
-        return () => abortController.abort()
+        //if(validateTime(formData.reservation_time, formData.reservation_date) === true){
+        if(validateTime(formData.reservation_time, formData.reservation_date) === true){    
+            const abortController = new AbortController()
+            createReservation(formData, abortController.signal)
+                .then((savedRes) => {
+                    history.push(`/dashboard?date=${formatAsDate(savedRes.reservation_date)}`)
+                })
+            return () => abortController.abort()            
+        }
     }
 
     function validateDay(dateString){
@@ -63,22 +67,22 @@ function NewResForm(){
             today.setUTCHours(0,0,0,0)
             if(date < today){
                 errors.push(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
-            }else{
-                validateTime(formData.reservation_time)
-            }
+            } 
+            // else{
+            //     validateTime(formData.reservation_time, dateString)
+            // }
         }
-
     }
 
-    function validateTime(timeString){
+    function validateTime(timeString, dateString){
         if(!timeString){
             errors.push("Please enter a time")
         }
         //access hours&minutes from string
         const [hours, minutes] = timeString.split(":")
 
-        //inject hours/minutes into new date object
-        const resTime = new Date();
+        //inject hours/minutes into reservation date object
+        const resTime = new Date(dateString)
         resTime.setUTCHours(hours, minutes, 0, 0)
 
         //set open, last res, and current times
@@ -87,11 +91,18 @@ function NewResForm(){
         const lastResTime = new Date();
         lastResTime.setUTCHours(21, 30, 0, 0)
         const currentTime = new Date()
+        currentTime.setHours(currentTime.getHours() - 7);
 
         //compare values, if invalid set error
-        if(resTime < openingTime || resTime > lastResTime || resTime < currentTime){
-            errors.push(`Please select a valid time. Reservations are open from 10:30 AM to 9:30 PM.`)
+        if(resTime < openingTime){
+            errors.push(`Please select a valid time. The restaurant opens at 10:30 AM.`)
+        } else if (resTime.getHours() > lastResTime.getHours() && resTime.getMinutes() > lastResTime.getMinutes()) {
+            errors.push(`Please select a valid time. No reservations after 9:30 PM.`)
+        } else if (resTime < currentTime){
+            errors.push(`Error: The time you selected has passed.`)
+            return false
         }
+        return true
     }
 
     function validateMobileNumber(mobileNumber){

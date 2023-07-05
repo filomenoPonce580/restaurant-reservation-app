@@ -34,6 +34,7 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  console.log(tables)
   function deleteRes(resToDelete){
     let filteredRes = reservations.filter(res => res !== resToDelete);
     setReservations(filteredRes)

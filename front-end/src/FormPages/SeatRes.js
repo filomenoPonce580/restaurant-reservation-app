@@ -19,7 +19,7 @@ function SeatRes(){
             .catch(setErrorMessage)
         return () => abortController.abort();
     }
-
+    console.log(tables)
     useEffect(loadPage, []);
 
     function handleSelectChange(event){
@@ -34,14 +34,17 @@ function SeatRes(){
         const selectedTable = tables.find((table, indx)=>{
             return table.table_id === Number(selectedTableId)
         })
+        console.log("resId", reservationId) //string
+        console.log("tableId", selectedTable.table_id) //number
 
         //PUT request.. on submit, we send api request to /tables/:tableId/seat
-        const abortController = new AbortController();
-        updateTable( reservationId, selectedTable.table_id, abortController.signal)
+        //const abortController = new AbortController();
+        updateTable( reservationId, selectedTable.table_id)
             .then(res => {
+                console.log(res)
                 history.push(`/dashboard?date=${today()}`)
             })
-        return abortController.abort()
+        //return abortController.abort()        <--- Abort controller makes seating table inconsistent.
     }
 
     const handleCancel = () => {
@@ -85,30 +88,3 @@ function SeatRes(){
 }
 
 export default SeatRes
-
-
-
-
-
-
-
-
-//for later, goes in submit handler
-        // Validate the number of people against the selected table's capacity
-        // const selectedTableData = tables.find((table) => table.table_id === parseInt(selectedTable));
-        // const { capacity } = selectedTableData;
-        // const reservationData = {
-        // reservation_id: parseInt(reservation_id),
-        // table_id: parseInt(selectedTable),
-        // };
-
-        // if (selectedTableData && capacity < reservationData.people) {
-        // setErrorMessage("Cannot seat the reservation. Table capacity exceeded.");
-        // } else {
-        // seatReservation(reservationData)
-        //     .then(() => {
-        //     history.push("/dashboard");
-        //     })
-        //     .catch((error) => {
-        //     setErrorMessage(error.message);
-        //     });
