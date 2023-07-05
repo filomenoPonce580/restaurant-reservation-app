@@ -78,7 +78,7 @@ function Dashboard({ date }) {
             </tr>
           </thead>
           <tbody>
-              {reservations.map((oneRes, indx) => <Reservation key={indx} reservation={oneRes} deleteRes={deleteRes}/>)}
+              {reservations.map((oneRes, indx) => <Reservation key={oneRes.reservation_id} reservation={oneRes} deleteRes={deleteRes}/>)}
           </tbody>
         </table>
       </div>
@@ -96,7 +96,7 @@ function Dashboard({ date }) {
             </tr>
           </thead>
           <tbody>
-              {tables.map((oneTable, indx) => <Table key={indx} data={oneTable}/>)}
+              {tables.map((oneTable, indx) => <Table key={oneTable.table_id} data={oneTable}/>)}
           </tbody>
         </table>
       </div>

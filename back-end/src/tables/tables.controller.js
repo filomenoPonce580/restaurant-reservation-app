@@ -197,7 +197,7 @@ function validateUnoccupied(req, res, next){
 }
 
 module.exports = {
-    list,
+    list: [asyncErrorBoundary(list)],
     create: [
         hasRequiredProperties,
         validateCapacity,
@@ -208,13 +208,14 @@ module.exports = {
         validateDataAndResId,
         asyncErrorBoundary(validateResIdExists),
         validateNotSeated,
-        updateResStatus,
-        validateTableExists,
+        asyncErrorBoundary(updateResStatus),
+        asyncErrorBoundary(validateTableExists),
         validateTableAvailableAndCapacity,
         asyncErrorBoundary(update)
     ],
     freeTable: [
         asyncErrorBoundary(validateTableExists),
         validateUnoccupied,
-        freeTable]
+        asyncErrorBoundary(freeTable)
+    ]
 };

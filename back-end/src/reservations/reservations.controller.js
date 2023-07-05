@@ -204,7 +204,7 @@ function validateCurrentResStatus(req, res, next){
 
 module.exports = {
   list,
-  read: [asyncErrorBoundary(reservationExists), read],
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
   create: [
     hasRequiredProperties,
     validateBookedStatus,
@@ -219,7 +219,7 @@ module.exports = {
     asyncErrorBoundary(reservationExists),
     validateNewStatus,
     validateCurrentResStatus,
-    update
+    asyncErrorBoundary(update)
   ],
   updateReservation: [
     asyncErrorBoundary(reservationExists),
@@ -230,6 +230,6 @@ module.exports = {
     validateOpenResDate,
     validateTime,
     validateOpenResTime,
-    update
+    asyncErrorBoundary(update)
   ]
 };

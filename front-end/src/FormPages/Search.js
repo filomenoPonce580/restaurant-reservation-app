@@ -41,7 +41,7 @@ function Search({mobile_number}){
                         </tr>
                     </thead>
                     <tbody>
-                        {reservations.map((oneRes, indx) => <Reservation key={indx} reservation={oneRes}/>)}
+                        {reservations.map((oneRes, indx) => <Reservation key={oneRes.reservation_id} reservation={oneRes}/>)}
                     </tbody>
                     </table>
                 </div>

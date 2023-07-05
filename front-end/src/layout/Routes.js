@@ -5,11 +5,11 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
-import NewResForm from "../Forms/NewResForm";
-import TableForm from "../Forms/TableForm";
-import SeatRes from "../Forms/SeatRes";
-import EditRes from "../Forms/EditRes";
-import Search from "../Forms/Search";
+import NewResForm from "../FormPages/NewRes";
+import TableForm from "../FormPages/TableForm";
+import SeatRes from "../FormPages/SeatRes";
+import EditRes from "../FormPages/EditRes";
+import Search from "../FormPages/Search";
 import useQuery from "../utils/useQuery";
 
 /**

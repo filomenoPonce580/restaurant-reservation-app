@@ -41,6 +41,7 @@ function SeatRes(){
             .then(res => {
                 history.push(`/dashboard?date=${today()}`)
             })
+        return abortController.abort()
     }
 
     const handleCancel = () => {
