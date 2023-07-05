@@ -1,6 +1,7 @@
 # Table Tracker
 
-App URL: https://table-tracker.onrender.com
+App URL: https://table-tracker.onrender.com  
+
 API URL: https://restaurant-reservations-backend-a920.onrender.com
 
 Table Tracker is an application that is designed for restaurant staff. It allows users to manage, create and update reservations.
