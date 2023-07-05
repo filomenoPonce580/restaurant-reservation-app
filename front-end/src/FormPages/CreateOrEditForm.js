@@ -1,4 +1,6 @@
-function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmit, errorMessage, history}){
+import Error from "./Errors"
+
+function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmit, errorMessage, history, errors}){
     return (
         <form>
                 {/* Form Input Fields */}
@@ -32,7 +34,7 @@ function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmi
                             className="form-control" 
                             name="mobile_number"
                             id="mobile_number" 
-                            placeholder={reservation ? reservation.mobile_number : "Mobile Number"}
+                            placeholder={reservation ? reservation.mobile_number : "555-555-5555"}
                             value={formData.mobile_number}
                             onChange={handleInputChange}/>
                     </div>
@@ -75,12 +77,8 @@ function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmi
                     </div>
                 </div>
 
-                {/* Error message */}
-                {errorMessage && (
-                    <div className="alert alert-danger" role="alert">
-                        {errorMessage}
-                    </div>
-                )}
+                {/* Error messages */}
+                {errors && errors.map(oneError=> <Error oneError={oneError}/>)}
 
                 {/* Cancel & submit buttons */}
                 <div className="form-group">

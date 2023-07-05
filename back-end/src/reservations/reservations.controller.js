@@ -103,6 +103,18 @@ function validatePeople(req,res,next){
   }
 }
 
+function validateMobileNumber(req, res, next){
+  let numberFormat = /^\d{3}-\d{3}-\d{4}$/;
+  if(!req.body.data.mobile_number.match(numberFormat)){
+    next({
+      status: 400,
+      message: 'mobile_number must be formatted like so: 555-555-5555'
+    })
+  } else {
+    next()
+  }
+}
+
 function validateDate(req,res,next){
   //checks for input data
   let dateFormat = /^\d{4}\-\d{1,2}\-\d{1,2}$/
@@ -210,6 +222,7 @@ module.exports = {
     validateBookedStatus,
     validatePeople,
     validateDate, 
+    validateMobileNumber,
     validateOpenResDate,
     validateTime,
     validateOpenResTime,
@@ -226,6 +239,7 @@ module.exports = {
     hasRequiredProperties,
     validateBookedStatus,
     validatePeople,
+    validateMobileNumber,
     validateDate, 
     validateOpenResDate,
     validateTime,

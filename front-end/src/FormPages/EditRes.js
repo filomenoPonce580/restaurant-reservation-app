@@ -18,7 +18,9 @@ function EditRes(){
     }
     const [reservation, setReservation] = useState([])
     const [formData, setFormData] = useState(initialFormData)
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorArray, setErrorArray] = useState([])
+    let errors = []
 
     function loadRes() {
       const abortController = new AbortController();
@@ -62,6 +64,9 @@ function EditRes(){
         }
 
         validateDateTime(updatedReservationObj.reservation_date, formData.reservation_time)
+        validateMobileNumber(updatedReservationObj.mobile_number)
+        checkSize(updatedReservationObj.people)
+        setErrorArray(errors)
 
         const abortController = new AbortController();
         updateReservation(updatedReservationObj, abortController.signal)
@@ -74,15 +79,14 @@ function EditRes(){
 
     function validateDateTime(dateString, timeString){
         //no reservations on tuesday
-        const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
-        if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
-          setErrorMessage(`Sorry, we are closed on Tuesdays. Please select another day`);
-        } else {
-            //no reservations for previous dates
+        const date = new Date(dateString + 'T00:00:00Z');               // Append 'T00:00:00Z' to ensure UTC format
+        if (date.getUTCDay() === 2) {                                   // Use getUTCDay() instead of getDay() for UTC-based day
+          errors.push(`Sorry, we are closed on Tuesdays. Please select another day`);
+        } else {//no reservations for previous dates
             const today = new Date()
             today.setUTCHours(0,0,0,0)
             if(date < today){
-                setErrorMessage(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
+                errors.push(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
             }else{
                 validateTime(timeString)
             }
@@ -107,14 +111,27 @@ function EditRes(){
 
         //compare values, if invalid set error
         if(resTime < openingTime || resTime > lastResTime || resTime < currentTime){
-            setErrorMessage(`Please select a valid time. Reservations are open from 10:30 AM to 9:30 PM.`)
+            errors.push(`Please select a valid time. Reservations are open from 10:30 AM to 9:30 PM.`)
+        }
+    }
+
+    function validateMobileNumber(mobileNumber){
+        const regex = /^\d{3}-\d{3}-\d{4}$/;
+        if (!regex.test(mobileNumber)){
+            errors.push("Please enter a phone number in the following format: 555-555-5555")
+        };
+    }
+
+    function checkSize(size){
+        if(size <= 0){
+            errors.push("Please enter a party size greater than 0")
         }
     }
 
     return(
         <React.Fragment>
             <h1>Edit Reservation</h1>
-            <CreateOrEditForm reservation={reservation} formData={formData} handleInputChange={handleInputChange} handleSubmit={handleSubmit} history={history} errorMessage={errorMessage}/>
+            <CreateOrEditForm reservation={reservation} formData={formData} handleInputChange={handleInputChange} handleSubmit={handleSubmit} history={history} errors={errorArray}/>
         </React.Fragment>
     )
 }
