@@ -30,124 +30,111 @@ function NewResForm(){
 
     function handleSubmit(event){
         event.preventDefault()
-
         //convert party size into number for backend
         formData.people = Number(formData.people)
 
         //validations
-        validateDay(formData.reservation_date)
-        //validateTime(formData.reservation_time, formData.reservation_date)
-        validateMobileNumber(formData.mobile_number)
-        checkName(formData.first_name, formData.last_name)
-        checkSize(formData.people)
+        let fireAPI = true
+        if(!validateDateTime(formData.reservation_date, formData.reservation_time))fireAPI = false
+        if(!validateMobileNumber(formData.mobile_number))fireAPI = false
+        if(!checkName(formData.first_name, formData.last_name))fireAPI = false
+        if(!checkSize(formData.people)) fireAPI = false
         setErrorArray(errors)
 
-        //if(validateTime(formData.reservation_time, formData.reservation_date) === true){
-        if(validateTime(formData.reservation_time, formData.reservation_date) === true){    
+        console.log("we fire it?", fireAPI)
+
+        if(fireAPI){
+            console.log("Here we go")
             const abortController = new AbortController()
             createReservation(formData, abortController.signal)
                 .then((savedRes) => {
                     history.push(`/dashboard?date=${formatAsDate(savedRes.reservation_date)}`)
                 })
-            return () => abortController.abort()            
+            return () => abortController.abort()              
         }
     }
 
-    function validateDay(dateString){
+    function validateDateTime (dateString, timeString){
+        let isValid = true
+
         if(!dateString){
             errors.push("Please enter a date")
+            isValid = false
         }
-        //no reservations on tuesday
-        const date = new Date(dateString + 'T00:00:00Z'); // Append 'T00:00:00Z' to ensure UTC format
-        if (date.getUTCDay() === 2) { // Use getUTCDay() instead of getDay() for UTC-based day
-          errors.push(`Sorry, we are closed on Tuesdays. Please select another day`);
-        } else {
-            //no reservations for previous dates
-            const today = new Date()
-            today.setUTCHours(0,0,0,0)
-            if(date < today){
-                errors.push(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
-            } 
-            // else{
-            //     validateTime(formData.reservation_time, dateString)
-            // }
-        }
-    }
-
-    function validateTime(timeString, dateString){
         if(!timeString){
             errors.push("Please enter a time")
+            isValid = false
         }
-        //access hours&minutes from string
-        const [hours, minutes] = timeString.split(":")
 
-        //inject hours/minutes into reservation date object
-        const resTime = new Date(dateString)
-        resTime.setUTCHours(hours, minutes, 0, 0)
+        const resDate = new Date(`${dateString}T${timeString}`)
+        if (resDate.toDateString().slice(0,3) === "Tue") {
+            errors.push(`Sorry, we are closed on Tuesdays. Please select another day`);
+            isValid = false
+        }
 
-        //set open, last res, and current times
         const openingTime = new Date();
-        openingTime.setUTCHours(10, 30, 0, 0)
+        openingTime.setUTCHours(17, 30, 0, 0)
         const lastResTime = new Date();
         lastResTime.setUTCHours(21, 30, 0, 0)
+        lastResTime.setHours(lastResTime.getHours() + 7)
         const currentTime = new Date()
-        currentTime.setHours(currentTime.getHours() - 7);
+        currentTime.setHours(currentTime.getHours() - 0);
 
-        //compare values, if invalid set error
-        if(resTime < openingTime){
-            errors.push(`Please select a valid time. The restaurant opens at 10:30 AM.`)
-        } else if (resTime.getHours() > lastResTime.getHours() && resTime.getMinutes() > lastResTime.getMinutes()) {
+        if(resDate < currentTime){
+            errors.push(`You have set the reservation for a prior date or time. Please enter a future date or time`)
+            isValid = false
+        } else if (resDate.getHours() + Number("0." + resDate.getMinutes()) > lastResTime.getHours() + Number("0." + lastResTime.getMinutes())){
             errors.push(`Please select a valid time. No reservations after 9:30 PM.`)
-        } else if (resTime < currentTime){
-            errors.push(`Error: The time you selected has passed.`)
-            return false
+            isValid = false
+        } else if(resDate.getHours() + Number("0." + resDate.getMinutes()) < openingTime.getHours() + Number("0." + openingTime.getMinutes())){
+            errors.push(`Please select a valid time. The restaurant opens at 10:30 AM.`)
+            isValid = false
         }
-        return true
+  
+        return isValid  
     }
 
     function validateMobileNumber(mobileNumber){
+        let isValid = true
         const regex = /^\d{3}-\d{3}-\d{4}$/;
         if (!regex.test(mobileNumber)){
             errors.push("Please enter a phone number in the following format: 555-555-5555")
+            isValid = false
         };
+        return isValid
     }
 
     function checkName(firstName, lastName){
+        let isValid = true
         if(!firstName){
             errors.push("Please enter a first name.")
+            isValid = false
         }
         if(!lastName){
             errors.push("Please enter a last name.")
+            isValid = false
         }
+        return isValid
     }
 
     function checkSize(size){
+        let isValid = true
+        console.log(!size)
         if(!size){
-            errors.push("Please enter a size for the party.")
+            errors.push("Please enter a number into the Party Size field.")
+            isValid = false
         }
         if(size <= 0){
             errors.push("Please enter a party size greater than 0")
+            isValid = false
         }
-    }
-
-    function renderErrors(array){
-        if(array.length > 0){
-            array.map(error => {
-                return (
-                    <div className="alert alert-danger" role="alert">
-                        {error}
-                    </div>   
-                )             
-            })
-
-        }
+        return isValid
     }
 
     return(
         <React.Fragment>
             <h1>Create New Reservation</h1>
             <CreateOrEditForm formData={formData} handleInputChange={handleInputChange} handleSubmit={handleSubmit} history={history} errors={errorArray}/>
-            {renderErrors(errorArray)}
         </React.Fragment>
     )
 }

@@ -62,68 +62,81 @@ function EditRes(){
             updatedReservationObj.people = Number(updatedReservationObj.people)
         }
 
-        validateDateTime(updatedReservationObj.reservation_date, formData.reservation_time)
-        validateMobileNumber(updatedReservationObj.mobile_number)
-        checkSize(updatedReservationObj.people)
+        let isValid = true
+        // validateDateTime(updatedReservationObj.reservation_date, formData.reservation_time)
+        if(!validateMobileNumber(updatedReservationObj.mobile_number)) isValid = false
+        if(!validateDateTime(updatedReservationObj.reservation_date, updatedReservationObj.reservation_time)) isValid = false
+        if(!checkSize(updatedReservationObj.people)) isValid = false
         setErrorArray(errors)
 
-        const abortController = new AbortController();
-        updateReservation(updatedReservationObj, abortController.signal)
-            .then((updatedRes)=>{
-                history.push(`/dashboard?date=${updatedReservationObj.reservation_date}`)
-            })
-        return () => abortController.abort();
-    }
-
-    function validateDateTime(dateString, timeString){
-        //no reservations on tuesday
-        const date = new Date(dateString + 'T00:00:00Z');               // Append 'T00:00:00Z' to ensure UTC format
-        if (date.getUTCDay() === 2) {                                   // Use getUTCDay() instead of getDay() for UTC-based day
-          errors.push(`Sorry, we are closed on Tuesdays. Please select another day`);
-        } else {//no reservations for previous dates
-            const today = new Date()
-            today.setUTCHours(0,0,0,0)
-            if(date < today){
-                errors.push(`Sorry, we can not reserve a table for a past date. Pleas select a future date`)
-            }else{
-                validateTime(timeString)
-            }
+        if(isValid){
+            const abortController = new AbortController();
+            updateReservation(updatedReservationObj, abortController.signal)
+                .then((updatedRes)=>{
+                    history.push(`/dashboard?date=${updatedReservationObj.reservation_date}`)
+                })
+            return () => abortController.abort();
         }
-
     }
 
-    function validateTime(timeString){
-        //access hours&minutes from string
-        const [hours, minutes] = timeString.split(":")
 
-        //inject hours/minutes into new date object
-        const resTime = new Date();
-        resTime.setUTCHours(hours, minutes, 0, 0)
-
-        //set open, last res, and current times
+    function validateDateTime (dateString, timeString){
+        let isValid = true
+    
+        if(!dateString){
+            errors.push("Please enter a date")
+            isValid = false
+        }
+        if(!timeString){
+            errors.push("Please enter a time")
+            isValid = false
+        }
+    
+        const resDate = new Date(`${dateString}T${timeString}`)
+        if (resDate.toDateString().slice(0,3) === "Tue") {
+            errors.push(`Sorry, we are closed on Tuesdays. Please select another day`);
+            isValid = false
+        }
+    
         const openingTime = new Date();
-        openingTime.setUTCHours(10, 30, 0, 0)
+        openingTime.setUTCHours(17, 30, 0, 0)
         const lastResTime = new Date();
         lastResTime.setUTCHours(21, 30, 0, 0)
+        lastResTime.setHours(lastResTime.getHours() + 7)
         const currentTime = new Date()
-
-        //compare values, if invalid set error
-        if(resTime < openingTime || resTime > lastResTime || resTime < currentTime){
-            errors.push(`Please select a valid time. Reservations are open from 10:30 AM to 9:30 PM.`)
+        currentTime.setHours(currentTime.getHours() - 0);
+    
+        if(resDate < currentTime){
+            errors.push(`You have set the reservation for a prior date or time. Please enter a future date or time`)
+            isValid = false
+        } else if (resDate.getHours() + Number("0." + resDate.getMinutes()) > lastResTime.getHours() + Number("0." + lastResTime.getMinutes())){
+            errors.push(`Please select a valid time. No reservations after 9:30 PM.`)
+            isValid = false
+        } else if(resDate.getHours() + Number("0." + resDate.getMinutes()) < openingTime.getHours() + Number("0." + openingTime.getMinutes())){
+            errors.push(`Please select a valid time. The restaurant opens at 10:30 AM.`)
+            isValid = false
         }
+    
+        return isValid  
     }
-
+    
     function validateMobileNumber(mobileNumber){
+        let isValid = true
         const regex = /^\d{3}-\d{3}-\d{4}$/;
         if (!regex.test(mobileNumber)){
             errors.push("Please enter a phone number in the following format: 555-555-5555")
+            isValid = false
         };
+        return isValid
     }
 
     function checkSize(size){
+        let isValid = true
         if(size <= 0){
             errors.push("Please enter a party size greater than 0")
+            isValid = false
         }
+        return isValid
     }
 
     return(

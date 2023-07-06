@@ -78,7 +78,7 @@ function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmi
                 </div>
 
                 {/* Error messages */}
-                {errors && errors.map(oneError=> <Error oneError={oneError}/>)}
+                {errors && errors.map(oneError=> <Error oneError={oneError} key={oneError}/>)}
 
                 {/* Cancel & submit buttons */}
                 <div className="form-group">
