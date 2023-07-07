@@ -35,7 +35,7 @@ function TableForm(){
                 .then((savedTable)=>{
                     history.push(`/dashboard?date=${today()}`)
                 })
-            return abortController.abort()
+            //return abortController.abort()
         }
     }
 
