@@ -115,6 +115,23 @@ function validateMobileNumber(req, res, next){
   }
 }
 
+function validateMobileNumberForUpdate(req, res, next){
+  let numberFormatSpaced = /^\d{3}-\d{3}-\d{4}$/;
+  let numberFormat10d = /^\d{10}$/;
+
+  if(req.body.data.mobile_number.match(numberFormatSpaced) || req.body.data.mobile_number.match(numberFormat10d)){
+    //code for future functionality, will make the phone numbers uniform. right now causes thinkful tests to fail
+    // const formattedNumber = req.body.data.mobile_number.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+    // res.locals.formattedNumber = formattedNumber;
+    next();
+  } else {
+    next({
+      status: 400,
+      message: 'mobile_number must be formatted like so: 555-555-5555 or 5555555555'
+    })
+  }
+}
+
 function validateDate(req,res,next){
   //checks for input data
   let dateFormat = /^\d{4}\-\d{1,2}\-\d{1,2}$/
@@ -239,7 +256,7 @@ module.exports = {
     hasRequiredProperties,
     validateBookedStatus,
     validatePeople,
-    validateMobileNumber,
+    validateMobileNumberForUpdate,
     validateDate, 
     validateOpenResDate,
     validateTime,
