@@ -5,12 +5,13 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
-import NewResForm from "../FormPages/NewRes";
 import TableForm from "../FormPages/TableForm";
 import SeatRes from "../FormPages/SeatRes";
-import EditRes from "../FormPages/EditRes";
 import Search from "../FormPages/Search";
 import useQuery from "../utils/useQuery";
+
+import NewResForm from "../FormPages/NewRes";
+import EditRes from "../FormPages/EditRes";
 
 /**
  * Defines all the routes for the application.
