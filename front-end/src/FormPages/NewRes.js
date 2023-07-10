@@ -42,7 +42,6 @@ function NewResForm(){
         setErrorArray(errors)
 
         if(fireAPI){
-            console.log("Valid, fire API")
             const abortController = new AbortController()
             createReservation(formData, abortController.signal)
                 .then((savedRes) => {
@@ -117,7 +116,7 @@ function NewResForm(){
 
     function checkSize(size){
         let isValid = true
-        console.log(!size)
+        //console.log(!size)
         if(!size){
             errors.push("Please enter a number into the Party Size field.")
             isValid = false

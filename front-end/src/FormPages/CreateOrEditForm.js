@@ -54,7 +54,7 @@ function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmi
                             onChange={handleInputChange}/>
                     </div>
                     <div className="form-group col-md-4">
-                        <label htmlFor="reservation_date">Reservation Date</label>
+                        <label htmlFor="reservation_date">{reservation ? `New Date (if applicable)` : 'Reservation Date'}</label>
                         <input
                             type="date"
                             className="form-control"
@@ -64,7 +64,7 @@ function CreateOrEditForm({reservation, formData, handleInputChange, handleSubmi
                             onChange={handleInputChange}/>
                     </div>
                     <div className="form-group col-md-4">
-                        <label htmlFor="reservation_time">Reservation Time</label>
+                        <label htmlFor="reservation_time">{reservation ? `New Time (if applicable)` : 'Reservation Time'}</label>
                         <input
                             type="time"
                             className="form-control"
