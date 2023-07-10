@@ -194,7 +194,7 @@ function validateOpenResTime(req, res, next) {
   const closingTime = new Date();
   closingTime.setUTCHours(21, 30, 0, 0); // Set the last valid time to 9:30 PM UTC
 
-  if (reservationDateTime < openingTime || reservationDateTime >= closingTime) {
+  if (reservationDateTime < openingTime || reservationDateTime > closingTime) {
     return next({
       status: 400,
       message: "Please select a reservation time between 10:30 AM and 9:30 PM.",
