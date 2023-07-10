@@ -41,10 +41,8 @@ function NewResForm(){
         if(!checkSize(formData.people)) fireAPI = false
         setErrorArray(errors)
 
-        console.log("we fire it?", fireAPI)
-
         if(fireAPI){
-            console.log("Here we go")
+            console.log("Valid, fire API")
             const abortController = new AbortController()
             createReservation(formData, abortController.signal)
                 .then((savedRes) => {
@@ -83,10 +81,10 @@ function NewResForm(){
         if(resDate < currentTime){
             errors.push(`You have set the reservation for a prior date or time. Please enter a future date or time`)
             isValid = false
-        } else if (resDate.getHours() + Number("0." + resDate.getMinutes()) > lastResTime.getHours() + Number("0." + lastResTime.getMinutes())){
+        } else if (resDate.getHours() + Number("0." + resDate.getMinutes()) >= lastResTime.getHours() + Number("0." + lastResTime.getMinutes())){
             errors.push(`Please select a valid time. No reservations after 9:30 PM.`)
             isValid = false
-        } else if(resDate.getHours() + Number("0." + resDate.getMinutes()) < openingTime.getHours() + Number("0." + openingTime.getMinutes())){
+        } else if(resDate.getHours() + Number("0." + resDate.getMinutes()) <= openingTime.getHours() + Number("0." + openingTime.getMinutes())){
             errors.push(`Please select a valid time. The restaurant opens at 10:30 AM.`)
             isValid = false
         }
