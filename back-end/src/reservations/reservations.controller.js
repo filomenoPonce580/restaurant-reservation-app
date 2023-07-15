@@ -133,7 +133,6 @@ function validateMobileNumberForUpdate(req, res, next){
 }
 
 function validateDate(req,res,next){
-  //checks for input data
   let dateFormat = /^\d{4}\-\d{1,2}\-\d{1,2}$/
   if(!req.body.data.reservation_date.match(dateFormat)){
       next({
@@ -170,7 +169,6 @@ function validateOpenResDate(req, res, next) {
 }
 
 function validateTime(req,res,next){
-  //checks for input data
   let timeFormat = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
   if(!req.body.data.reservation_time.match(timeFormat)){
       next({

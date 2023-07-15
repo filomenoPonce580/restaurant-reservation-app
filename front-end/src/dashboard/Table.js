@@ -37,7 +37,6 @@ function Table({data}){
             </td>
         </tr>
    )
-    
 }
 
 export default Table

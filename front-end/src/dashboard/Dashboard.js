@@ -3,7 +3,6 @@ import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "./Reservation";
 import Table from "./Table";
-//import {BrowserRouter as Router, Route, Link, Switch, useHistory, useLocation, useRouteMatch, useParams} from "react-router-dom"
 import {Link} from "react-router-dom"
 import { previous, next, today } from "../utils/date-time";
 

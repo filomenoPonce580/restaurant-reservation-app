@@ -30,21 +30,15 @@ function SeatRes(){
         event.preventDefault();
         setErrorMessage(null);
 
-        //grab selected table data
         const selectedTable = tables.find((table, indx)=>{
             return table.table_id === Number(selectedTableId)
         })
-        console.log("resId", reservationId) //string
-        console.log("tableId", selectedTable.table_id) //number
 
-        //PUT request.. on submit, we send api request to /tables/:tableId/seat
-        //const abortController = new AbortController();
         updateTable( reservationId, selectedTable.table_id)
             .then(res => {
                 console.log(res)
                 history.push(`/dashboard?date=${today()}`)
             })
-        //return abortController.abort()        <--- Abort controller makes seating table inconsistent.
     }
 
     const handleCancel = () => {

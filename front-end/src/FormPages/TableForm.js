@@ -28,19 +28,16 @@ function TableForm(){
 
         if(isValidTableName && isValidCapacity){
             formData.capacity = Number(formData.capacity);
-            console.log(formData)
             //aborts only in useEffects
-            const abortController = new AbortController(); //only used in 1 context, if info that loads when visiting component AND its posible to nav away from component, ideally cancel requests
+            //const abortController = new AbortController(); //only used in 1 context, if info that loads when visiting component AND its posible to nav away from component, ideally cancel requests
             createTable(formData, abortController.signal)
                 .then((savedTable)=>{
                     history.push(`/dashboard?date=${today()}`)
                 })
-            //return abortController.abort()
         }
     }
 
     function validateTableName(nameString){
-        //helpers
         function validateTableNumber(tableNumberString){
             let tableNumberCharacters = tableNumberString.split("")
             if(tableNumberCharacters[0]!== "#"){

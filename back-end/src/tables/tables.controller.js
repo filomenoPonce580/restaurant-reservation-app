@@ -136,8 +136,6 @@ async function validateResIdExists(req, res, next){
     }
 }
 
-//UserStory6 --
-
 //validation. if res.status === seated, send error
 function validateNotSeated(req, res, next){
     const reservation = res.locals.reservation;
