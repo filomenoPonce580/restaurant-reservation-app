@@ -29,7 +29,7 @@ function TableForm(){
         if(isValidTableName && isValidCapacity){
             formData.capacity = Number(formData.capacity);
             //aborts only in useEffects
-            //const abortController = new AbortController(); //only used in 1 context, if info that loads when visiting component AND its posible to nav away from component, ideally cancel requests
+            const abortController = new AbortController(); //only used in 1 context, if info that loads when visiting component AND its posible to nav away from component, ideally cancel requests
             createTable(formData, abortController.signal)
                 .then((savedTable)=>{
                     history.push(`/dashboard?date=${today()}`)
