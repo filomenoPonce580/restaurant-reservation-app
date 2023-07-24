@@ -38,7 +38,6 @@ function Dashboard({ date }) {
     setReservations(filteredRes)
   }
 
-  //displays date in 'Month DD, YYYY' format on dashboard
   const months   = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const arrDate = date.split("-")
   if(arrDate[1][0]=="0"){

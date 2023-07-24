@@ -3,9 +3,6 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
 const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_number", "people", "reservation_date", "reservation_time");
 
-/**
- * List handler for reservation resources
- */
 async function read(req, res, next){
   res.json({data: res.locals.reservation})
 }
@@ -61,9 +58,6 @@ async function update(req, res, next) {
   res.status(200).json({ data })
 }
 
-//---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
-
-//check if reservation exists
 async function reservationExists(req, res, next){
   const reservation = await service.read(req.params.reservationId);
   if(reservation){
@@ -120,9 +114,6 @@ function validateMobileNumberForUpdate(req, res, next){
   let numberFormat10d = /^\d{10}$/;
 
   if(req.body.data.mobile_number.match(numberFormatSpaced) || req.body.data.mobile_number.match(numberFormat10d)){
-    //code for future functionality, will make the phone numbers uniform. right now causes thinkful tests to fail
-    // const formattedNumber = req.body.data.mobile_number.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
-    // res.locals.formattedNumber = formattedNumber;
     next();
   } else {
     next({
@@ -187,10 +178,10 @@ function validateOpenResTime(req, res, next) {
   reservationDateTime.setUTCHours(hours, minutes, 0, 0);
 
   const openingTime = new Date();
-  openingTime.setUTCHours(10, 30, 0, 0); // Sets the opening time to 10:30 AM UTC
+  openingTime.setUTCHours(10, 30, 0, 0);        // Sets the opening time to 10:30 AM UTC
 
   const closingTime = new Date();
-  closingTime.setUTCHours(21, 30, 0, 0); // Set the last valid time to 9:30 PM UTC
+  closingTime.setUTCHours(21, 30, 0, 0);        // Set the last valid time to 9:30 PM UTC
 
   if (reservationDateTime < openingTime || reservationDateTime > closingTime) {
     return next({
@@ -202,7 +193,6 @@ function validateOpenResTime(req, res, next) {
   next();
 }
 
-//--validations for updating status
 function validateNewStatus(req, res, next){
   const status = req.body.data.status
   if (status === "booked" || status === "seated" || status === "finished" || status === 'cancelled'){
@@ -227,7 +217,6 @@ function validateCurrentResStatus(req, res, next){
   }
 }
 
-///--------------------------------------------
 
 module.exports = {
   list,

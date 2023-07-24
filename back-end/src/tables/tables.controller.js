@@ -24,9 +24,8 @@ async function read(req, res, next){
 }
 
 async function update(req, res, next) {
-    let reservationId = req.body.data.reservation_id;       //returns number
+    let reservationId = req.body.data.reservation_id;
 
-    //create table object with updated reservation ID
     const updatedTable = {
         ...res.locals.table,
         reservation_id: reservationId
@@ -70,7 +69,6 @@ async function freeTable(req, res, next) {
 }
 
 
-//---------------  MIDDLEWARES   ----   VALIDATIONS  -----------
 function validateCapacity(req,res,next){
     if(!req.body.data.capacity || typeof req.body.data.capacity !== "number" ){
         next({
@@ -121,7 +119,6 @@ function validateDataAndResId(req, res, next){
 }
 
 async function validateResIdExists(req, res, next){
-    //points to reservations/reservations.service and uses function there to check for resId
     const resId = req.body.data.reservation_id
     const reservation = await resService.read(resId)
 
@@ -136,7 +133,6 @@ async function validateResIdExists(req, res, next){
     }
 }
 
-//validation. if res.status === seated, send error
 function validateNotSeated(req, res, next){
     const reservation = res.locals.reservation;
     if(reservation.status === "seated"){
@@ -148,7 +144,6 @@ function validateNotSeated(req, res, next){
     next();
 }
 
-//updates the reservation status when table has been seated
 async function updateResStatus(req, res, next) {
     let reservation = res.locals.reservation;
 

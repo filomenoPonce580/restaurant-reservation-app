@@ -47,13 +47,11 @@ function CreateOrEditForm({reservationId}){
     function handleSubmit(event){
         event.preventDefault()
 
-        //reformat party size and time for compatability with backend
         formData.people = Number(formData.people)
         if(formData.reservation_time){
             formData.reservation_time = formatAsTime(formData.reservation_time) 
         } 
 
-        //validations
         let fireAPI = true
         if(!validateDateTime())fireAPI = false
         if(!validateMobileNumber(formData.mobile_number))fireAPI = false
@@ -109,38 +107,6 @@ function CreateOrEditForm({reservationId}){
             errors.push('Please select a time between 10:30am and 9:30pm.')
             isValid = false
         }
-
-        /*---------------- OLD TIME/DATE VALIDATOR------------- (discard when project is accepted)
-        const resDate = new Date(`${dateString}T${timeString}`)
-
-        if (resDate.toDateString().slice(0,3) === "Tue") {      
-            errors.push(`Sorry, we are closed on Tuesdays. Please select another day`);
-            isValid = false
-        }
-
-        const openingTime = new Date();
-        openingTime.setUTCHours(17, 30, 0, 0)
-
-        console.log(openingTime)
-
-        const lastResTime = new Date();
-        lastResTime.setUTCHours(21, 30, 0, 0)
-        lastResTime.setHours(lastResTime.getHours() + 7)
-        console.log(lastResTime)
-        const currentTime = new Date()
-        currentTime.setHours(currentTime.getHours() - 0);
-
-        if(resDate < currentTime){
-            errors.push(`You have set the reservation for a prior date or time. Please enter a future date or time`)
-            isValid = false
-        } else if (resDate.getHours() + Number("0." + resDate.getMinutes()) > lastResTime.getHours() + Number("0." + lastResTime.getMinutes())){
-            errors.push(`Please select a valid time. No reservations after 9:30 PM.`)
-            isValid = false
-        } else if(resDate.getHours() + Number("0." + resDate.getMinutes()) < openingTime.getHours() + Number("0." + openingTime.getMinutes())){
-            errors.push(`Please select a valid time. The restaurant opens at 10:30 AM.`)
-            isValid = false
-        }
-        */
   
         return isValid  
     }
